@@ -25,6 +25,7 @@ There is one file per GitHub issue. Each body has these sections: **Goal**, **Ta
 | 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                     | #7, #8     |
 | 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                     | #9         |
 | 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md) | #1         |
+| 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                   | #1         |
 
 Order: 1 → {2, 3, 11} → 4 → 5 → 6 → {7, 8} → 9 → 10
 
