@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# swc compiler cache (created by next/jest)
+/.swc/
+
 # production
 /build
 
