@@ -8,11 +8,13 @@ These rules apply to this repo only and override the user's global defaults wher
 
 Use **pnpm** only. Never use npm or yarn, and commit only `pnpm-lock.yaml`.
 
-## GitHub and git actions
+## GitLab and git actions
 
-Claude may create GitHub issues, commit, push and open PRs, but **must ask the user and get an explicit yes before each action**. An earlier approval does not carry over to the next action.
+The repo lives on GitLab: `https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training` (remote `origin`). Use the `glab` CLI for issues and merge requests (MRs); MRs are referenced as `!N`, issues as `#N`. Finished work (issues #1–#4, #11 and #15, PRs #12–#17) stays on GitHub (remote `github`) as history; don't open new issues or PRs there.
 
-## Branch, commit and PR workflow (one issue = one branch = one PR)
+Claude may create GitLab issues, commit, push and open MRs, but **must ask the user and get an explicit yes before each action**. An earlier approval does not carry over to the next action.
+
+## Branch, commit and MR workflow (one issue = one branch = one MR)
 
 `feat/ai-tools` is the integration branch. Never commit issue work directly to it.
 
@@ -24,10 +26,10 @@ Claude may create GitHub issues, commit, push and open PRs, but **must ask the u
 
 1. **Branch:** start each issue from an up-to-date `feat/ai-tools`, on a new branch named `<type>/<issue>-<short-slug>`. Examples: `feat/2-jest-setup`, `chore/11-workflow-line-endings`.
 2. **Commits:** use `<type>(#<issue>): <message>`. Example: `feat(#2): set up Jest with next/jest and React Testing Library`.
-3. **PR:** push the branch and open a PR **into `feat/ai-tools`** (not `main`).
-   - Title: `[#<issue>] <GitHub issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
-   - Body: a summary, how it was verified, and `Closes #<issue>`. GitHub only auto-closes the issue once the work reaches `main`.
-4. **Close the issue:** after the user merges the PR, run `gh issue close <issue>`, after asking first.
+3. **MR:** push the branch and open an MR **into `feat/ai-tools`** (not `main`).
+   - Title: `[#<issue>] <GitLab issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
+   - Description: a summary, how it was verified, and `Closes #<issue>`. GitLab only auto-closes issues when an MR merges into the default branch, so merging into `feat/ai-tools` leaves the issue open.
+4. **Close the issue:** after the user merges the MR, run `glab issue close <issue>`, after asking first.
 
 ## Review before every commit
 
@@ -46,4 +48,4 @@ Before asking to commit:
 
 ## Planning
 
-Implementation issues live in `docs/issues/` and on GitHub (#1–#11). Each piece of work maps to one issue.
+Implementation issues live in `docs/issues/`. Open issues are on GitLab; finished ones stay on GitHub (see [`docs/issues/README.md`](docs/issues/README.md)). Each piece of work maps to one issue. Issues #5–#10 were recreated on GitLab with their GitHub numbers. GitLab numbers new issues from #19 on, so they never reuse a GitHub issue or PR number.
