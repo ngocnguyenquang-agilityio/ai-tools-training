@@ -48,17 +48,19 @@ src/
   app/              Routes, layout and global styles (App Router)
   components/ui/    shadcn/ui components
   lib/              Shared helpers
-docs/issues/        One Markdown file per GitHub issue
+docs/issues/        One Markdown file per issue
 .claude/            Shared Claude Code settings and hooks
 ```
 
 ## Workflow
 
-Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue gets one branch and one PR:
+The repo is hosted on [GitLab](https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training). Earlier, finished work (issues #1–#4, #11 and #15, PRs #12–#17) stays on [GitHub](https://github.com/ngocnguyenquang-agilityio/ai-tools-training) as history.
+
+Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue gets one branch and one merge request (MR):
 
 - **Branch:** `<type>/<issue>-<slug>`, cut from `feat/ai-tools`. Example: `feat/2-jest-setup`.
 - **Commit messages:** `<type>(#<issue>): <message>`.
-- **Pull request:** goes into `feat/ai-tools` and is titled `[#<issue>] <issue title>`.
+- **Merge request:** goes into `feat/ai-tools` and is titled `[#<issue>] <issue title>`.
 
 See [`CLAUDE.md`](CLAUDE.md) for the full rules.
 
