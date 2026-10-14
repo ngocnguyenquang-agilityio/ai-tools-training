@@ -26,10 +26,16 @@ Claude may create GitLab issues, commit, push and open MRs, but **must ask the u
 
 1. **Branch:** start each issue from an up-to-date `feat/ai-tools`, on a new branch named `<type>/<issue>-<short-slug>`. Examples: `feat/2-jest-setup`, `chore/11-workflow-line-endings`.
 2. **Commits:** use `<type>(#<issue>): <message>`. Example: `feat(#2): set up Jest with next/jest and React Testing Library`.
-3. **MR:** push the branch and open an MR **into `feat/ai-tools`** (not `main`).
+3. **Issue status:** before opening the MR, update the status docs in the issue branch so they merge with the work:
+   - In `docs/issues/<NN>-<slug>.md`, tick each finished task (`[x]`).
+   - In `docs/issues/README.md`, set the issue's **Where** cell to `GitLab (closed)`.
+
+   Commit it as part of the issue, e.g. `<type>(#<issue>): mark issue done in docs/issues`. After the merge, `feat/ai-tools` already has the correct status, so it needs no follow-up commit.
+
+4. **MR:** push the branch and open an MR **into `feat/ai-tools`** (not `main`).
    - Title: `[#<issue>] <GitLab issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
    - Description: a summary, how it was verified, and `Closes #<issue>`. GitLab only auto-closes issues when an MR merges into the default branch, so merging into `feat/ai-tools` leaves the issue open.
-4. **Close the issue:** after the user merges the MR, run `glab issue close <issue>`, after asking first.
+5. **Close the issue:** after the user merges the MR, run `glab issue close <issue>`, after asking first.
 
 ## Review before every commit
 

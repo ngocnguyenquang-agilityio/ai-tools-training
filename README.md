@@ -60,6 +60,7 @@ Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue
 
 - **Branch:** `<type>/<issue>-<slug>`, cut from `feat/ai-tools`. Example: `feat/2-jest-setup`.
 - **Commit messages:** `<type>(#<issue>): <message>`.
+- **Issue status:** the issue branch ticks its tasks in `docs/issues/<NN>-<slug>.md` and marks the issue closed in `docs/issues/README.md`, so the status merges with the work.
 - **Merge request:** goes into `feat/ai-tools` and is titled `[#<issue>] <issue title>`.
 
 See [`CLAUDE.md`](CLAUDE.md) for the full rules.
