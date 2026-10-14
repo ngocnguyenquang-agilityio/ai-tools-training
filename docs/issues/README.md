@@ -20,7 +20,7 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 2   | Set up Jest (next/jest) + React Testing Library                           | [02-jest.md](02-jest.md)                                   | #1         | GitHub (closed) |
 | 3   | Initialize shadcn/ui                                                      | [03-shadcn.md](03-shadcn.md)                               | #1         | GitHub (closed) |
 | 4   | Hacker News API client and types                                          | [04-hn-client.md](04-hn-client.md)                         | #2         | GitHub (closed) |
-| 5   | NewsCard component                                                        | [05-news-card.md](05-news-card.md)                         | #3, #4     | GitLab          |
+| 5   | NewsCard component                                                        | [05-news-card.md](05-news-card.md)                         | #3, #4     | GitLab (closed) |
 | 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                         | #5         | GitLab          |
 | 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                               | #6         | GitLab          |
 | 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)           | #6         | GitLab          |
