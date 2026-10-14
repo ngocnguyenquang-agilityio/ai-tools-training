@@ -89,10 +89,16 @@ export async function getStories(
   const ids = await getStoryIds(feed);
   const totalPages = Math.ceil(ids.length / pageSize);
 
-  const start = (page - 1) * pageSize;
-  const items = await Promise.all(
-    ids.slice(start, start + pageSize).map(getItem),
-  );
+  // Dropped items (dead, deleted, jobs) are replaced with the IDs that follow,
+  // so a page stays full. Those IDs can show up again at the top of the next page.
+  const stories: Story[] = [];
+  let cursor = (page - 1) * pageSize;
+  while (stories.length < pageSize && cursor < ids.length) {
+    const batch = ids.slice(cursor, cursor + pageSize - stories.length);
+    cursor += batch.length;
+    const items = await Promise.all(batch.map(getItem));
+    stories.push(...items.filter(isLiveStory).map(toStory));
+  }
 
-  return { stories: items.filter(isLiveStory).map(toStory), totalPages };
+  return { stories, totalPages };
 }

@@ -1,27 +1,24 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { cacheLife } from "next/cache";
 
-export default function Home() {
+import { NewsCard } from "@/components/news-card";
+import { getStories } from "@/lib/hn/client";
+
+export default async function Home() {
+  "use cache";
+  // Prerendered into the static shell, regenerated in the background every 5 minutes.
+  cacheLife({ stale: 300, revalidate: 300, expire: 3600 });
+
+  const { stories } = await getStories("top", { page: 1, pageSize: 30 });
+  // Captured inside the cache scope so relative times match the cached render.
+  const now = new Date();
+
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Tech News</h1>
-
-      {/* Temporary shadcn check; replaced by the story list in #6. */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Sample story</CardTitle>
-          <CardDescription>shadcn/ui is set up</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Badge variant="secondary">Sample</Badge>
-        </CardContent>
-      </Card>
-    </main>
+    <ol className="flex flex-col gap-4">
+      {stories.map((story) => (
+        <li key={story.id}>
+          <NewsCard story={story} now={now} />
+        </li>
+      ))}
+    </ol>
   );
 }

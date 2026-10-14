@@ -136,6 +136,39 @@ describe("getStories", () => {
     expect(stories.map((s) => s.id)).toEqual([1]);
   });
 
+  it("fills the page from the following IDs when items are dropped", async () => {
+    const ids = [1, 2, 3, 4, 5, 6, 7];
+    const fetchMock = mockFetch({
+      [`${API_BASE}/topstories.json`]: ids,
+      ...itemRoutes({
+        1: story(1),
+        2: story(2, { dead: true }),
+        3: story(3),
+        4: story(4, { type: "job" }),
+        5: null,
+        6: story(6),
+        7: story(7),
+      }),
+    });
+
+    const { stories } = await getStories("top", { page: 1, pageSize: 3 });
+
+    expect(stories.map((s) => s.id)).toEqual([1, 3, 6]);
+    // IDs 1-3, then 4, 5 and 6 one at a time to refill the slot; 7 is never fetched.
+    expect(fetchMock).toHaveBeenCalledTimes(1 + 6);
+  });
+
+  it("returns a short page when the feed runs out of live stories", async () => {
+    mockFetch({
+      [`${API_BASE}/topstories.json`]: [1, 2, 3],
+      ...itemRoutes({ 1: story(1), 2: null, 3: story(3, { deleted: true }) }),
+    });
+
+    const { stories } = await getStories("top", { page: 1, pageSize: 3 });
+
+    expect(stories.map((s) => s.id)).toEqual([1]);
+  });
+
   it("fetches only the requested page and computes totalPages", async () => {
     const ids = Array.from({ length: 25 }, (_, i) => i + 1);
     const fetchMock = mockFetch({
