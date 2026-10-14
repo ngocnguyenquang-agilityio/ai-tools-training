@@ -21,7 +21,7 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 3   | Initialize shadcn/ui                                                      | [03-shadcn.md](03-shadcn.md)                               | #1         | GitHub (closed) |
 | 4   | Hacker News API client and types                                          | [04-hn-client.md](04-hn-client.md)                         | #2         | GitHub (closed) |
 | 5   | NewsCard component                                                        | [05-news-card.md](05-news-card.md)                         | #3, #4     | GitLab (closed) |
-| 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                         | #5         | GitLab          |
+| 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                         | #5         | GitLab (closed) |
 | 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                               | #6         | GitLab          |
 | 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)           | #6         | GitLab          |
 | 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                     | #7, #8     | GitLab          |
