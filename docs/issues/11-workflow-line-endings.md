@@ -4,13 +4,13 @@ Write down the per-issue branch, commit and PR workflow, and make line endings c
 
 ## Tasks
 
-- [ ] Update `CLAUDE.md` with the workflow:
-  - [ ] One branch per issue, cut from `feat/ai-tools`: `<type>/<issue>-<slug>`.
-  - [ ] Commit messages: `<type>(#<issue>): <message>`.
-  - [ ] PRs go into `feat/ai-tools`, titled `[#<issue>] <title>`.
-- [ ] Add `.gitattributes` with `* text=auto eol=lf`, so git checks files out with LF line endings. That matches Prettier's default `endOfLine: "lf"`.
-- [ ] Renormalize the files already tracked (`git add --renormalize .`).
-- [ ] Add this issue to `docs/issues/README.md`.
+- [x] Update `CLAUDE.md` with the workflow:
+  - [x] One branch per issue, cut from `feat/ai-tools`: `<type>/<issue>-<slug>`.
+  - [x] Commit messages: `<type>(#<issue>): <message>`.
+  - [x] PRs go into `feat/ai-tools`, titled `[#<issue>] <title>`.
+- [x] Add `.gitattributes` with `* text=auto eol=lf`, so git checks files out with LF line endings. That matches Prettier's default `endOfLine: "lf"`.
+- [x] Renormalize the files already tracked (`git add --renormalize .`).
+- [x] Add this issue to `docs/issues/README.md`.
 
 ## Acceptance criteria
 

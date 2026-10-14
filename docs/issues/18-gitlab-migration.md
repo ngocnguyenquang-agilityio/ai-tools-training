@@ -4,11 +4,11 @@ The project moved from GitHub to GitLab. Update the workflow docs so they descri
 
 ## Tasks
 
-- [ ] `CLAUDE.md`: GitHub → GitLab, PR → MR, `gh` → `glab`. Describe how GitLab auto-closes issues and keep closing them by hand as the fallback.
-- [ ] `README.md`: update the "Workflow" section and the project structure note.
-- [ ] `docs/issues/README.md`: say where each issue lives now, and replace the `gh issue create` script with a short history note.
-- [ ] `docs/issues/09-e2e.md`: skip GitLab CI instead of GitHub Actions.
-- [ ] Add this issue to `docs/issues/README.md`.
+- [x] `CLAUDE.md`: GitHub → GitLab, PR → MR, `gh` → `glab`. Describe how GitLab auto-closes issues and keep closing them by hand as the fallback.
+- [x] `README.md`: update the "Workflow" section and the project structure note.
+- [x] `docs/issues/README.md`: say where each issue lives now, and replace the `gh issue create` script with a short history note.
+- [x] `docs/issues/09-e2e.md`: skip GitLab CI instead of GitHub Actions.
+- [x] Add this issue to `docs/issues/README.md`.
 
 ## Acceptance criteria
 

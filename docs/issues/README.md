@@ -28,7 +28,7 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                     | #9         | GitLab          |
 | 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md) | #1         | GitHub (closed) |
 | 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                   | #1         | GitHub (closed) |
-| 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)           | none       | GitLab          |
+| 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)           | none       | GitLab (closed) |
 
 Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 has no dependencies.
 
