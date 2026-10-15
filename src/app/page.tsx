@@ -12,6 +12,14 @@ export default async function Home() {
   // Captured inside the cache scope so relative times match the cached render.
   const now = new Date();
 
+  if (stories.length === 0) {
+    return (
+      <p className="py-16 text-center text-muted-foreground">
+        No stories right now. Check back soon.
+      </p>
+    );
+  }
+
   return (
     <ol className="flex flex-col gap-4">
       {stories.map((story) => (

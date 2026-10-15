@@ -33,6 +33,15 @@ describe("Home", () => {
     });
   });
 
+  it("shows an empty-state message instead of a list when there are no stories", async () => {
+    mockGetStories.mockResolvedValue({ stories: [], totalPages: 0 });
+
+    render(await Home());
+
+    expect(screen.getByText(/no stories right now/i)).toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
   it("renders the stories in order as an ordered list", async () => {
     const stories = [makeStory(1), makeStory(2), makeStory(3)];
     mockGetStories.mockResolvedValue({ stories, totalPages: 1 });
