@@ -43,6 +43,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude code (personal settings; .claude/settings.json and hooks are shared)
+# claude code (personal settings; settings.json, launch.json, hooks, skills and agents are shared)
 .claude/settings.local.json
-.claude/launch.json

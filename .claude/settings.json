@@ -1,4 +1,8 @@
 {
+  "statusLine": {
+    "type": "command",
+    "command": "node \"$CLAUDE_PROJECT_DIR/.claude/statusline.mjs\""
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -28,7 +32,7 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-checks.mjs\"",
-            "timeout": 180
+            "timeout": 300
           }
         ]
       }

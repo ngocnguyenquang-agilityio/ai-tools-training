@@ -49,7 +49,7 @@ src/
   components/ui/    shadcn/ui components
   lib/              Shared helpers
 docs/issues/        One Markdown file per issue
-.claude/            Shared Claude Code settings and hooks
+.claude/            Shared Claude Code settings, hooks, skills and agents
 ```
 
 ## Workflow
@@ -65,16 +65,38 @@ Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue
 
 See [`CLAUDE.md`](CLAUDE.md) for the full rules.
 
-## Claude Code hooks
+## Claude Code tooling
 
-[`.claude/settings.json`](.claude/settings.json) registers hooks that enforce the project rules while Claude Code works. They run automatically for anyone who opens the repo in Claude Code. The scripts in [`.claude/hooks/`](.claude/hooks) are plain Node, so they work on Windows, macOS and Linux.
+Everything under [`.claude/`](.claude) is shared and applies to anyone who opens the repo in Claude Code. Personal overrides go in `.claude/settings.local.json`, which git ignores.
 
-| Hook              | Runs                                 | What it does                                                                                                                                              |
-| ----------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm-guard.mjs`  | Before every Bash/PowerShell command | Blocks `npm`, `yarn` and `npx`, and tells Claude to use `pnpm` or `pnpm dlx`                                                                              |
-| `format-file.mjs` | After Claude edits or writes a file  | Runs Prettier on the file, and `eslint --fix` on JS/TS files. Errors that can't be fixed automatically are sent back to Claude.                           |
-| `stop-checks.mjs` | When Claude finishes its turn        | If JS/TS files changed, runs `pnpm typecheck` and `pnpm lint`. Failures are sent back to Claude so it fixes them before stopping (at most once per turn). |
+### Skills
+
+| Skill                | Invoked                        | What it does                                                                                                                  |
+| -------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `/new-issue <topic>` | By you                         | Drafts `docs/issues/<NN>-<slug>.md` and its README row, then creates the GitLab issue after you say yes                       |
+| `/start-issue <N>`   | By you                         | Updates `feat/ai-tools`, creates the `<type>/<N>-<slug>` branch and turns the issue's tasks into the plan                     |
+| `/finish-issue`      | By you, or by Claude           | Runs all checks and the `repo-reviewer` review, updates the issue status docs, and shows the commit, push and MR commands     |
+| `next-docs`          | By Claude, before Next.js code | Reads the matching guide in `node_modules/next/dist/docs/`, because this Next.js version is newer than Claude's training data |
+
+### Agents
+
+- **`repo-reviewer`**: read-only pre-commit review of uncommitted and untracked work. It covers correctness, the `CLAUDE.md` rules and the issue spec, and splits findings into hard violations and judgement calls.
+- **`ui-verifier`**: opens the app in Claude's built-in browser (via [`.claude/launch.json`](.claude/launch.json)) and checks it at 375px and desktop width, in light and dark mode, with screenshots.
+
+### Status line
+
+[`.claude/statusline.mjs`](.claude/statusline.mjs) shows the current branch and the issue number it belongs to.
+
+### Hooks
+
+[`.claude/settings.json`](.claude/settings.json) registers hooks that enforce the project rules while Claude Code works. The scripts in [`.claude/hooks/`](.claude/hooks) are plain Node, so they work on Windows, macOS and Linux.
+
+| Hook              | Runs                                 | What it does                                                                                                                                                                                           |
+| ----------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm-guard.mjs`  | Before every Bash/PowerShell command | Blocks `npm`, `yarn` and `npx`, and tells Claude to use `pnpm` or `pnpm dlx`                                                                                                                           |
+| `format-file.mjs` | After Claude edits or writes a file  | Runs Prettier on the file, and `eslint --fix` on JS/TS files. Errors that can't be fixed automatically are sent back to Claude.                                                                        |
+| `stop-checks.mjs` | When Claude finishes its turn        | If JS/TS files changed, runs `pnpm typecheck`, `pnpm lint` and the Jest tests related to the changed files. Failures are sent back to Claude so it fixes them before stopping (at most once per turn). |
 
 When a hook blocks something or reports errors, it exits with code 2. Claude Code shows the message to Claude, which then corrects itself.
 
-To check which hooks are active, run `/hooks` in Claude Code. Personal overrides go in `.claude/settings.local.json`, which git ignores.
+To check which hooks are active, run `/hooks` in Claude Code.

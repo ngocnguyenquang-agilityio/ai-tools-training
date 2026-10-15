@@ -16,7 +16,9 @@ Claude may create GitLab issues, commit, push and open MRs, but **must ask the u
 
 ## Branch, commit and MR workflow (one issue = one branch = one MR)
 
-`feat/ai-tools` is the integration branch. Never commit issue work directly to it.
+The project skills run this workflow. `/new-issue` drafts and creates an issue, and `/start-issue <N>` cuts its branch and loads its tasks. When the work is done, use the `finish-issue` skill: it runs the checks and the review, updates the status docs, and hands over the commit, push and MR commands. The rules below are what those skills follow.
+
+`feat/ai-tools` is the integration branch. Issue work always lives on its own issue branch.
 
 `<type>` is a conventional type: `feat`, `fix`, `chore`, `docs`, `test` or `refactor`.
 
@@ -41,8 +43,8 @@ Claude may create GitLab issues, commit, push and open MRs, but **must ask the u
 
 Before asking to commit:
 
-1. Spawn a subagent that runs the Claude Code `code-review` skill (`/code-review`) on the pending work. The review covers uncommitted and untracked files, not only commits. For this repo, this replaces the global `mattpocock-skills:code-review` rule.
-2. Fix real findings, then re-run `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build` and `pnpm test` (once issue #2 adds it).
+1. Spawn the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) on the pending work. It reviews uncommitted and untracked files against the merge-base with `feat/ai-tools`, for correctness, these rules and the issue spec. For this repo, this replaces the global `mattpocock-skills:code-review` rule.
+2. Fix hard violations and spec gaps, then re-run the checks below.
 3. Show the user the remaining judgement-call findings, then ask for permission to commit.
 
 ## Checks
@@ -51,6 +53,13 @@ Before asking to commit:
 - `pnpm typecheck`
 - `pnpm format:check`
 - `pnpm build`
+- `pnpm test`
+
+## Claude tooling
+
+- **Hooks** (`.claude/hooks/`) enforce pnpm, format edited files, and run typecheck, lint and related Jest tests at the end of each turn.
+- **Next.js docs:** before writing Next.js code, use the `next-docs` skill.
+- **UI checks:** after UI changes, the `ui-verifier` agent checks the page at 375px and desktop, in light and dark mode.
 
 ## Planning
 

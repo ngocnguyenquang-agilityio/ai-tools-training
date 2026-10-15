@@ -14,23 +14,24 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 - Playwright
 - ESLint and Prettier
 
-| #   | Title                                                                     | File                                                       | Depends on | Where           |
-| --- | ------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------- | --------------- |
-| 1   | Scaffold Next.js app with pnpm, TypeScript, Tailwind, ESLint and Prettier | [01-scaffold.md](01-scaffold.md)                           | none       | GitHub (closed) |
-| 2   | Set up Jest (next/jest) + React Testing Library                           | [02-jest.md](02-jest.md)                                   | #1         | GitHub (closed) |
-| 3   | Initialize shadcn/ui                                                      | [03-shadcn.md](03-shadcn.md)                               | #1         | GitHub (closed) |
-| 4   | Hacker News API client and types                                          | [04-hn-client.md](04-hn-client.md)                         | #2         | GitHub (closed) |
-| 5   | NewsCard component                                                        | [05-news-card.md](05-news-card.md)                         | #3, #4     | GitLab (closed) |
-| 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                         | #5         | GitLab (closed) |
-| 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                               | #6         | GitLab (closed) |
-| 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)           | #6         | GitLab          |
-| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                     | #7, #8     | GitLab          |
-| 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                     | #9         | GitLab          |
-| 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md) | #1         | GitHub (closed) |
-| 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                   | #1         | GitHub (closed) |
-| 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)           | none       | GitLab (closed) |
+| #   | Title                                                                     | File                                                         | Depends on | Where           |
+| --- | ------------------------------------------------------------------------- | ------------------------------------------------------------ | ---------- | --------------- |
+| 1   | Scaffold Next.js app with pnpm, TypeScript, Tailwind, ESLint and Prettier | [01-scaffold.md](01-scaffold.md)                             | none       | GitHub (closed) |
+| 2   | Set up Jest (next/jest) + React Testing Library                           | [02-jest.md](02-jest.md)                                     | #1         | GitHub (closed) |
+| 3   | Initialize shadcn/ui                                                      | [03-shadcn.md](03-shadcn.md)                                 | #1         | GitHub (closed) |
+| 4   | Hacker News API client and types                                          | [04-hn-client.md](04-hn-client.md)                           | #2         | GitHub (closed) |
+| 5   | NewsCard component                                                        | [05-news-card.md](05-news-card.md)                           | #3, #4     | GitLab (closed) |
+| 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                           | #5         | GitLab (closed) |
+| 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                                 | #6         | GitLab (closed) |
+| 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)             | #6         | GitLab          |
+| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                       | #7, #8     | GitLab          |
+| 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                       | #9         | GitLab          |
+| 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md)   | #1         | GitHub (closed) |
+| 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                     | #1         | GitHub (closed) |
+| 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)             | none       | GitLab (closed) |
+| 19  | Claude Code workflow skills, subagents and related-test Stop hook         | [19-claude-workflow-skills.md](19-claude-workflow-skills.md) | none       | GitLab (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 has no dependencies.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 and #19 have no dependencies.
 
 ## History
 
