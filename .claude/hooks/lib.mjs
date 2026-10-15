@@ -20,16 +20,18 @@ export async function readStdinJson() {
 }
 
 // Run a command in the repo root. `shell: true` lets Windows find the
-// pnpm.cmd shim.
+// pnpm.cmd shim. Colours are off so feedback to Claude is plain text.
+// `stdout` is untrimmed, for output where leading spaces matter.
 export function run(command) {
   const result = spawnSync(command, {
     cwd: projectDir,
     shell: true,
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
+    env: { ...process.env, FORCE_COLOR: "0", NO_COLOR: "1" },
   });
   const output = [result.error?.message, result.stdout, result.stderr].filter(Boolean).join("\n");
-  return { ok: result.status === 0, output: output.trim() };
+  return { ok: result.status === 0, output: output.trim(), stdout: result.stdout ?? "" };
 }
 
 // Keep feedback short: the end of a long log is the useful part.
