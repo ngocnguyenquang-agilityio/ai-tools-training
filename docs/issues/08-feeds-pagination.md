@@ -6,14 +6,14 @@ URL shape: `/?feed=top|new|best&page=N`
 
 ## Tasks
 
-- [ ] `src/lib/search-params.ts`: `parseFeedParams(searchParams): { feed: Feed; page: number }`.
-  - [ ] An invalid or missing `feed` falls back to `top`.
-  - [ ] A non-numeric, `< 1` or non-integer `page` falls back to `1`.
-- [ ] `src/lib/search-params.test.ts`: unit tests for the valid, invalid and missing cases.
-- [ ] `src/components/feed-tabs.tsx`: three `<Link>`s styled as tabs, with `aria-current="page"` on the active one. Use links rather than client-side tabs, so the page stays a Server Component.
-- [ ] `src/components/feed-pagination.tsx`: built on shadcn `Pagination`, with Prev/Next links. Disable Prev on page 1 and Next on the last page. Keep the current `feed` in the links.
-- [ ] Update `src/app/page.tsx` to read the awaited `searchParams`, parse them, and pass `feed` and `page` to `getStories`.
-- [ ] Clamp `page` to `totalPages`.
+- [x] `src/lib/search-params.ts`: `parseFeedParams(searchParams): { feed: Feed; page: number }`.
+  - [x] An invalid or missing `feed` falls back to `top`.
+  - [x] A non-numeric, `< 1` or non-integer `page` falls back to `1`.
+- [x] `src/lib/search-params.test.ts`: unit tests for the valid, invalid and missing cases.
+- [x] `src/components/feed-tabs.tsx`: three `<Link>`s styled as tabs, with `aria-current="page"` on the active one. Use links rather than client-side tabs, so the page stays a Server Component.
+- [x] `src/components/feed-pagination.tsx`: built on shadcn `Pagination`, with Prev/Next links. Disable Prev on page 1 and Next on the last page. Keep the current `feed` in the links.
+- [x] Update `src/app/page.tsx` to read the awaited `searchParams`, parse them, and pass `feed` and `page` to `getStories`.
+- [x] Clamp `page` to `totalPages`.
 
 ## Acceptance criteria
 
