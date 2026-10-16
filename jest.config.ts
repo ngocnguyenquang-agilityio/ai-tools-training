@@ -14,8 +14,11 @@ const config: Config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
-  // Playwright specs live in e2e/ and must not run under Jest.
-  testPathIgnorePatterns: ["/node_modules/", "/e2e/", "/.next/"],
+  // Playwright specs live in e2e/ and must not run under Jest. Claude Code
+  // worktrees in .claude/ hold full copies of the repo with their own tests.
+  testPathIgnorePatterns: ["/node_modules/", "/e2e/", "/.next/", "/.claude/"],
+  // Keeps the worktrees' package.json out of the module map (duplicate name).
+  modulePathIgnorePatterns: ["<rootDir>/.claude/"],
 };
 
 // Exported this way so next/jest can load the async Next.js config.
