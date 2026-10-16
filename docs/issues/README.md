@@ -32,8 +32,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 19  | Claude Code workflow skills, subagents and related-test Stop hook         | [19-claude-workflow-skills.md](19-claude-workflow-skills.md) | none       | GitLab (closed) |
 | 20  | Dark mode with theme toggle                                               | [20-dark-mode.md](20-dark-mode.md)                           | none       | GitLab (closed) |
 | 21  | Jest: ignore Claude Code worktrees                                        | [21-jest-ignore-worktrees.md](21-jest-ignore-worktrees.md)   | none       | GitLab (closed) |
+| 22  | GitLab MR maintenance prompt for /loop                                    | [22-loop-md.md](22-loop-md.md)                               | none       | GitLab          |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18, #19, #20 and #21 have no dependencies. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18, #19, #20, #21 and #22 have no dependencies. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
