@@ -30,8 +30,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                     | #1         | GitHub (closed) |
 | 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)             | none       | GitLab (closed) |
 | 19  | Claude Code workflow skills, subagents and related-test Stop hook         | [19-claude-workflow-skills.md](19-claude-workflow-skills.md) | none       | GitLab (closed) |
+| 21  | Jest: ignore Claude Code worktrees                                        | [21-jest-ignore-worktrees.md](21-jest-ignore-worktrees.md)   | none       | GitLab (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 and #19 have no dependencies.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18, #19 and #21 have no dependencies.
 
 ## History
 
