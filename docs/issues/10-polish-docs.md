@@ -8,11 +8,7 @@ Polish the UI on mobile and desktop, add dark mode, document the project and (op
   - [ ] Check it at 375px, 768px and desktop widths.
   - [ ] The page must never scroll horizontally.
   - [ ] Long titles wrap.
-- [ ] Dark mode:
-  - [ ] Install `next-themes`.
-  - [ ] Add a `ThemeProvider` (`attribute="class"`, `defaultTheme="system"`) in the layout.
-  - [ ] Add a theme toggle button in the header.
-  - [ ] Use the shadcn CSS variables for all colors.
+- [ ] Dark mode: moved to #20. Check here that it still looks right after the polish.
 - [ ] Accessibility pass:
   - [ ] Visible focus styles.
   - [ ] Link names make sense.
