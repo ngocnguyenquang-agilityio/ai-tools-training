@@ -1,7 +1,8 @@
 import * as React from "react";
+import Link from "next/link";
 import { cn } from "cn";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -46,24 +47,25 @@ function PaginationLink({
   className,
   isActive,
   size = "icon",
+  href,
   ...props
 }: PaginationLinkProps) {
-  return (
-    <Button
-      variant={isActive ? "outline" : "ghost"}
-      size={size}
-      className={cn(className)}
-      nativeButton={false}
-      render={
-        <a
-          aria-current={isActive ? "page" : undefined}
-          data-slot="pagination-link"
-          data-active={isActive}
-          {...props}
-        />
-      }
-    />
-  );
+  const linkProps = {
+    "aria-current": isActive ? ("page" as const) : undefined,
+    "data-slot": "pagination-link",
+    "data-active": isActive,
+    className: cn(
+      buttonVariants({ variant: isActive ? "outline" : "ghost", size }),
+      className,
+    ),
+    ...props,
+  };
+
+  // Styled with buttonVariants rather than wrapped in <Button>, which would add
+  // role="button" and tabindex="0". next/link keeps paging a client-side
+  // navigation; without an href (a disabled end) a bare <a> is not focusable
+  // or announced as a link.
+  return href ? <Link href={href} {...linkProps} /> : <a {...linkProps} />;
 }
 
 function PaginationPrevious({
