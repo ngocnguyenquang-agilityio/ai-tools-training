@@ -31,8 +31,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)             | none       | GitLab (closed) |
 | 19  | Claude Code workflow skills, subagents and related-test Stop hook         | [19-claude-workflow-skills.md](19-claude-workflow-skills.md) | none       | GitLab (closed) |
 | 20  | Dark mode with theme toggle                                               | [20-dark-mode.md](20-dark-mode.md)                           | none       | GitLab (closed) |
+| 21  | Jest: ignore Claude Code worktrees                                        | [21-jest-ignore-worktrees.md](21-jest-ignore-worktrees.md)   | none       | GitLab (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18, #19 and #20 have no dependencies. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18, #19, #20 and #21 have no dependencies. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
