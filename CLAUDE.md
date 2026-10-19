@@ -59,6 +59,7 @@ Before asking to commit:
 
 - **Hooks** (`.claude/hooks/`) enforce pnpm, format edited files, and run typecheck, lint and related Jest tests at the end of each turn.
 - **Next.js docs:** before writing Next.js code, use the `next-docs` skill.
+- **Tests:** when writing or changing a Jest test, follow the `how-we-write-tests` skill.
 - **UI checks:** after UI changes, the `ui-verifier` agent checks the page at 375px and desktop, in light and dark mode.
 
 ## Planning

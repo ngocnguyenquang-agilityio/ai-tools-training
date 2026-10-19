@@ -19,7 +19,7 @@ Done when you have read every changed and untracked file, not only its hunks.
 ## Review on three axes
 
 - **Correctness**: bugs a test or a user would hit. Wrong logic, unhandled states, broken edge cases (empty lists, invalid input, failed fetches), Server/Client Component mistakes, and tests that pass without asserting the behaviour.
-- **Standards**: the `CLAUDE.md` rules (pnpm only, branch and commit naming, the issue status docs). Also the patterns of the surrounding code: naming, file layout under `src/`, colocated `*.test.ts(x)`, shadcn components from `src/components/ui/`, Tailwind and CSS variables for colour. For Next.js APIs, check usage against `node_modules/next/dist/docs/` rather than memory.
+- **Standards**: the `CLAUDE.md` rules (pnpm only, branch and commit naming, the issue status docs). Also the patterns of the surrounding code: naming, file layout under `src/`, colocated `*.test.ts(x)`, shadcn components from `src/components/ui/`, Tailwind and CSS variables for colour. If any `*.test.ts(x)` changed, check it against `.claude/skills/how-we-write-tests/SKILL.md` and name the skill in the finding. For Next.js APIs, check usage against `node_modules/next/dist/docs/` rather than memory.
 - **Spec**: every task and acceptance criterion in the issue file. Each one is met by the diff, partly met, or not touched. Flag work the diff does that the issue didn't ask for.
 
 ## Report
