@@ -46,3 +46,6 @@ next-env.d.ts
 # claude code (personal settings and /wip notes; settings.json, launch.json, hooks, skills, commands and agents are shared)
 .claude/settings.local.json
 .claude/wip/
+
+# playwright mcp output (snapshots, console logs, screenshots)
+.playwright-mcp/
