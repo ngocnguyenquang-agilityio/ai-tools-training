@@ -63,6 +63,7 @@ Before asking to commit:
 - **Personal commands:** `/wip` writes a pause note for the current branch to the gitignored `.claude/wip/`, and `/standup` builds your Yesterday / Today / Blockers report from your commits, your GitLab MRs and issues, and those notes.
 - **UI checks:** after UI changes, the `ui-verifier` agent checks the page at 375px and desktop, in light and dark mode.
 - **Playwright MCP:** `.mcp.json` adds the `playwright` server (`pnpm dlx @playwright/mcp@latest`) to drive the running app from a session. Claude Code asks you to approve it on the first session start. It runs with plain `pnpm` on Windows too, without a `cmd /c` wrapper.
+- **GitHub MCP:** GitLab's built-in MCP server is turned off on our instance (see #26), so each developer can add GitHub's hosted server at local scope, not in `.mcp.json`. Run this in PowerShell: `claude mcp add --scope local --transport http github https://api.githubcopilot.com/mcp/ -H "Authorization: Bearer $(gh auth token)"`. Check `gh auth status` first: the command copies the current token, so re-run it after `gh auth` changes. Use it only for the GitHub history repo. Its writes (comments) need the same explicit yes as `glab`, and new issues and PRs stay on GitLab.
 
 ## Planning
 
