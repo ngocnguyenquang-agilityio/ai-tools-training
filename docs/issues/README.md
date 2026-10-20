@@ -35,8 +35,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 22  | GitLab MR maintenance prompt for /loop                                    | [22-loop-md.md](22-loop-md.md)                               | none       | GitLab (closed) |
 | 23  | Team skill: how-we-write-tests (Jest + RTL conventions)                   | [23-team-test-skill.md](23-team-test-skill.md)               | none       | GitLab (closed) |
 | 24  | Personal slash commands: /standup and /wip                                | [24-personal-commands.md](24-personal-commands.md)           | none       | GitLab (closed) |
+| 25  | Shared .mcp.json with Playwright MCP                                      | [25-playwright-mcp.md](25-playwright-mcp.md)                 | none       | GitLab (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #24 have no dependencies. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #25 have no dependencies. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
