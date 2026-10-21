@@ -1,11 +1,16 @@
 # Claude Code in GitLab CI (beta): https://code.claude.com/docs/en/gitlab-ci-cd
 #
-# claude-review runs on every MR and posts one review note. Claude only gets
+# claude-review, once turned on (see below), runs on every MR and posts one
+# review note. Claude only gets
 # read-only tools and runs without GITLAB_ACCESS_TOKEN in its environment;
 # this script, not Claude, posts the note, and CI never pushes code.
 #
 # Manual "@claude" run: CI/CD > Pipelines > Run pipeline, with the variable
 # AI_FLOW_INPUT set to the request. The answer is printed in the job log.
+#
+# The job is off until a runner exists: with no runner it would leave every
+# MR with a pipeline stuck on "pending". Turn it on with the CI/CD variable
+# CLAUDE_REVIEW_ENABLED = true.
 #
 # Masked CI/CD variables (Settings > CI/CD > Variables), never in this file.
 # Don't mark them Protected: MR pipelines run on unprotected issue branches.
@@ -19,6 +24,8 @@ claude-review:
   stage: ai
   image: node:24-alpine3.21
   rules:
+    - if: '$CLAUDE_REVIEW_ENABLED != "true"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "web" && $AI_FLOW_INPUT'
   # Review feedback must never block a merge, e.g. during an API outage.
