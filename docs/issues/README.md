@@ -37,8 +37,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 24  | Personal slash commands: /standup and /wip                                | [24-personal-commands.md](24-personal-commands.md)           | none       | GitLab (closed) |
 | 25  | Shared .mcp.json with Playwright MCP                                      | [25-playwright-mcp.md](25-playwright-mcp.md)                 | none       | GitLab (closed) |
 | 26  | Code-host MCP connector: GitHub (GitLab built-in disabled)                | [26-gitlab-mcp.md](26-gitlab-mcp.md)                         | none       | GitLab (closed) |
+| 27  | Notify-on-finish hook and Claude automation ladder (GitLab CI review)     | [27-hooks-automation.md](27-hooks-automation.md)             | none       | GitLab (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #26 have no dependencies. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #27 have no dependencies. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
