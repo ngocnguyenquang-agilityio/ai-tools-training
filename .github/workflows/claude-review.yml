@@ -8,8 +8,10 @@
 # GitHub App, so no app install is needed and a push would be refused.
 # Comments made with GITHUB_TOKEN don't start new workflow runs.
 #
-# Needs the repo secret ANTHROPIC_API_KEY (Settings > Secrets and variables >
-# Actions). PRs from forks get no secrets, so they're skipped.
+# Runs on a Claude Pro/Max subscription, not API credits: it needs the repo
+# secret CLAUDE_CODE_OAUTH_TOKEN, made with `claude setup-token` (Settings >
+# Secrets and variables > Actions). Its usage counts against the plan's limits.
+# PRs from forks get no secrets, so they're skipped.
 #
 # GitHub runs issue_comment workflows from the default branch only
 # (feat/ai-tools), so "@claude" works once this file is merged there.
@@ -45,7 +47,8 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Review feedback must never block a merge, e.g. during an API outage.
+    # Review feedback must never block a merge, e.g. during an API outage or
+    # when the subscription token is missing, expired or out of usage.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +59,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
           prompt: |
             Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
@@ -78,7 +81,7 @@ jobs:
         if: github.event_name == 'issue_comment'
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
           claude_args: >-
             --max-turns 25
