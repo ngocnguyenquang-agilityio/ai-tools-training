@@ -38,9 +38,11 @@ jobs:
        contains(github.event.comment.body, '@claude') &&
        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
     # At job level, so comment runs whose job is skipped never cancel a review.
+    # A new push replaces a running review. A new @claude comment never cancels a
+    # running answer, but GitHub keeps only the newest one waiting behind it.
     concurrency:
       group: claude-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number }}
-      cancel-in-progress: true
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Review feedback must never block a merge, e.g. during an API outage.

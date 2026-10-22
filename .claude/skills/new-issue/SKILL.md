@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 Draft an issue for: $ARGUMENTS
 
-1. **Number.** Take the highest number in the table in `docs/issues/README.md` plus one, and never below 28. GitHub assigns the real number (PRs use the same counter), and step 5 reconciles it.
+1. **Number.** Use the next free GitHub number: check `gh issue list --state all -L 1` and `gh pr list --state all -L 1`, because issues and PRs share the counter, and take the higher one plus one. GitHub assigns the real number, and step 5 reconciles it.
 2. **File.** Write `docs/issues/<NN>-<slug>.md` with exactly these `##` sections, in this order. Copy the tone and granularity of the most recent issue file.
    - **Goal**: one or two sentences on the outcome.
    - **Tasks**: `- [ ]` checkboxes, each small enough for one sitting. Name files and functions when you know them.

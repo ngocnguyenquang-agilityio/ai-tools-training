@@ -41,7 +41,7 @@ The project skills run this workflow. `/new-issue` drafts and creates an issue, 
 
    Commit it as part of the issue, e.g. `<type>(#<issue>): mark issue done in docs/issues`. After the merge, `feat/ai-tools` already has the correct status, so it needs no follow-up commit.
 
-4. **PR:** push the branch to `origin` and open a PR **into `feat/ai-tools`** (not `main`). CI must pass before merging.
+4. **PR:** push the branch to `origin` and open a PR **into `feat/ai-tools`** (not `main`). Don't merge a PR with red CI. This is a team rule; GitHub doesn't enforce it yet (no branch protection).
    - Title: `[#<issue>] <GitHub issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
    - Body: a summary, how it was verified, and `Closes #<issue>`.
 5. **Close the issue:** `feat/ai-tools` is GitHub's default branch, so merging the PR closes the issue through `Closes #<issue>`. Check it closed (`gh issue view <issue>`). If it didn't, ask first, then run `gh issue close <issue>`. The next `/sync-gitlab` closes its GitLab copy.

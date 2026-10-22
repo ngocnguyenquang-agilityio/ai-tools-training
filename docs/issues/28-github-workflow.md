@@ -4,14 +4,14 @@ Move day-to-day work back to GitHub, where CI can run without admin setup, and k
 
 ## Tasks
 
-- [ ] One-time setup, in this order, each step after an explicit yes:
+- [x] One-time setup, in this order, each step after an explicit yes:
   - [x] Swap the remotes: `origin` = GitHub, `gitlab` = GitLab. Point `feat/ai-tools` at `origin/feat/ai-tools`.
   - [x] Fast-forward GitHub's `feat/ai-tools` to the GitLab state.
   - [x] Copy the closed GitLab issues #18–#27 to GitHub as closed issues, in order, before any new issue or PR, so GitHub's numbers match `docs/issues/`.
   - [x] Create this issue on GitHub (it should get #28), then its GitLab copy.
   - [x] Close GitHub #8 (done on GitLab). Close GitLab #9 and #10 with a link to their GitHub originals, which are the live ones now.
   - [x] Set GitHub's default branch to `feat/ai-tools`, so `Closes #N` closes issues on merge and `@claude` comments run.
-  - [ ] The user adds the `ANTHROPIC_API_KEY` repo secret on GitHub.
+  - [x] The user adds the `ANTHROPIC_API_KEY` repo secret on GitHub.
 - [x] `.github/workflows/ci.yml`: run `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build` and `pnpm test` on PRs into `feat/ai-tools` and `main`, and on pushes to `feat/ai-tools`.
 - [x] `.github/workflows/claude-review.yml`: Claude reviews each PR in one comment and answers `@claude` in PR comments. It can't edit or push, and it never blocks a merge.
 - [x] Delete `.gitlab-ci.yml`.
