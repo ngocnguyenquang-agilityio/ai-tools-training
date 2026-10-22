@@ -2,7 +2,7 @@
 
 There is one file per issue. Each body has these sections: **Goal**, **Tasks**, **Acceptance criteria**, **Depends on**.
 
-The project started on GitHub and moved to GitLab. The **Where** column says where each issue lives.
+The project started on GitHub, moved to GitLab, and moved back to GitHub in #28. GitLab is now an end-of-day mirror of the code and of each issue. The **Where** column says where each issue was worked on.
 
 **Stack:**
 
@@ -24,8 +24,8 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                           | #5         | GitLab (closed) |
 | 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                                 | #6         | GitLab (closed) |
 | 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)             | #6         | GitLab (closed) |
-| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                       | #7, #8     | GitLab          |
-| 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                       | #9         | GitLab          |
+| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                       | #7, #8     | GitHub          |
+| 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                       | #9         | GitHub          |
 | 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md)   | #1         | GitHub (closed) |
 | 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                     | #1         | GitHub (closed) |
 | 18  | Move workflow docs from GitHub to GitLab                                  | [18-gitlab-migration.md](18-gitlab-migration.md)             | none       | GitLab (closed) |
@@ -38,8 +38,9 @@ The project started on GitHub and moved to GitLab. The **Where** column says whe
 | 25  | Shared .mcp.json with Playwright MCP                                      | [25-playwright-mcp.md](25-playwright-mcp.md)                 | none       | GitLab (closed) |
 | 26  | Code-host MCP connector: GitHub (GitLab built-in disabled)                | [26-gitlab-mcp.md](26-gitlab-mcp.md)                         | none       | GitLab (closed) |
 | 27  | Notify-on-finish hook and Claude automation ladder (GitLab CI review)     | [27-hooks-automation.md](27-hooks-automation.md)             | none       | GitLab (closed) |
+| 28  | Move day-to-day workflow to GitHub; GitLab as end-of-day mirror           | [28-github-workflow.md](28-github-workflow.md)               | none       | GitHub (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #27 have no dependencies. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28 have no dependencies. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
@@ -47,12 +48,14 @@ Issues #1–#11 were created on GitHub from these files, in order, so the number
 
 When the project moved to GitLab, the open issues #5–#10 were recreated there with the same numbers, and each one links back to its GitHub original. Finished issues and merged PRs stayed on GitHub.
 
+GitLab CI needed a runner, and adding one needed an admin, so #28 moved day-to-day work back to GitHub. The closed GitLab issues #18–#27 were copied to GitHub as closed issues with the same numbers, so GitHub's numbers match these files and new issues start at #28. GitHub #9 and #10 are the live issues again. Their GitLab copies were closed with a link back.
+
 ## Create a new issue
 
-Write the file here first, named with the next free number (GitLab assigns it, starting at #19), then create the issue on GitLab from it:
+Use `/new-issue <topic>`. It writes the file here first, named with the next free number (GitHub assigns it; issues and PRs share the counter), then creates the issue on GitHub from it:
 
 ```bash
-glab issue create --yes --title "<title>" --description-file docs/issues/<NN>-<slug>.md
+gh issue create --title "<title>" --body-file docs/issues/<NN>-<slug>.md
 ```
 
-If GitLab assigns a different number, rename the file to match.
+If GitHub assigns a different number, rename the file to match. Then it mirrors the issue on GitLab with the same title and a description that starts with the GitHub issue URL. `/sync-gitlab` uses that URL to close the copy once the GitHub issue is closed.

@@ -54,14 +54,14 @@ docs/issues/        One Markdown file per issue
 
 ## Workflow
 
-The repo is hosted on [GitLab](https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training). Earlier, finished work (issues #1–#4, #11 and #15, PRs #12–#17) stays on [GitHub](https://github.com/ngocnguyenquang-agilityio/ai-tools-training) as history.
+Work happens on [GitHub](https://github.com/ngocnguyenquang-agilityio/ai-tools-training): issues, pull requests (PRs) and CI (GitHub Actions). [GitLab](https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training) is an end-of-day mirror. `/sync-gitlab` fast-forwards it from GitHub and closes the GitLab copies of closed issues.
 
-Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue gets one branch and one merge request (MR):
+Work is planned as issues in [`docs/issues/`](docs/issues/README.md). Each issue gets one branch and one PR:
 
 - **Branch:** `<type>/<issue>-<slug>`, cut from `feat/ai-tools`. Example: `feat/2-jest-setup`.
 - **Commit messages:** `<type>(#<issue>): <message>`.
 - **Issue status:** the issue branch ticks its tasks in `docs/issues/<NN>-<slug>.md` and marks the issue closed in `docs/issues/README.md`, so the status merges with the work.
-- **Merge request:** goes into `feat/ai-tools` and is titled `[#<issue>] <issue title>`.
+- **Pull request:** goes into `feat/ai-tools`, is titled `[#<issue>] <issue title>`, and is merged only with green CI (a team rule, not enforced).
 
 See [`CLAUDE.md`](CLAUDE.md) for the full rules.
 
@@ -73,9 +73,9 @@ Everything under [`.claude/`](.claude) is shared and applies to anyone who opens
 
 | Skill                | Invoked                        | What it does                                                                                                                  |
 | -------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `/new-issue <topic>` | By you                         | Drafts `docs/issues/<NN>-<slug>.md` and its README row, then creates the GitLab issue after you say yes                       |
+| `/new-issue <topic>` | By you                         | Drafts `docs/issues/<NN>-<slug>.md` and its README row, then creates the GitHub issue and its GitLab copy                     |
 | `/start-issue <N>`   | By you                         | Updates `feat/ai-tools`, creates the `<type>/<N>-<slug>` branch and turns the issue's tasks into the plan                     |
-| `/finish-issue`      | By you, or by Claude           | Runs all checks and the `repo-reviewer` review, updates the issue status docs, and shows the commit, push and MR commands     |
+| `/finish-issue`      | By you, or by Claude           | Runs all checks and the `repo-reviewer` review, updates the issue status docs, and shows the commit, push and PR commands     |
 | `next-docs`          | By Claude, before Next.js code | Reads the matching guide in `node_modules/next/dist/docs/`, because this Next.js version is newer than Claude's training data |
 
 ### Agents

@@ -1,0 +1,119 @@
+# Claude Code GitHub Action: https://github.com/anthropics/claude-code-action
+#
+# Reviews every PR once when it opens or gets new commits, and answers
+# "@claude <request>" in PR comments. Claude reads the code; it can't edit
+# files or push. For reviews, Claude writes a file and a later step posts it.
+#
+# It runs on the workflow's GITHUB_TOKEN (contents: read), not the Claude
+# GitHub App, so no app install is needed and a push would be refused.
+# Comments made with GITHUB_TOKEN don't start new workflow runs.
+#
+# Runs on a Claude Pro/Max subscription, not API credits: it needs the repo
+# secret CLAUDE_CODE_OAUTH_TOKEN, made with `claude setup-token` (Settings >
+# Secrets and variables > Actions). Its usage counts against the plan's limits.
+# PRs from forks get no secrets, so they're skipped.
+#
+# GitHub runs issue_comment workflows from the default branch only
+# (feat/ai-tools), so "@claude" works once this file is merged there.
+
+name: Claude review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    if: >-
+      (github.event_name == 'pull_request' &&
+       !github.event.pull_request.draft &&
+       github.event.pull_request.head.repo.full_name == github.repository) ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude') &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
+    # At job level, so comment runs whose job is skipped never cancel a review.
+    # A new push replaces a running review. A new @claude comment never cancels a
+    # running answer, but GitHub keeps only the newest one waiting behind it.
+    concurrency:
+      group: claude-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Review feedback must never block a merge, e.g. during an API outage or
+    # when the subscription token is missing, expired or out of usage.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history, so the PR's merge-base exists for git diff.
+          fetch-depth: 0
+      # A PR could commit its own claude-review.md; only Claude's may be posted.
+      - name: Clear any committed review file
+        if: github.event_name == 'pull_request'
+        run: rm -f claude-review.md
+      - name: Review the PR
+        if: github.event_name == 'pull_request'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            Read its title and body with: gh pr view ${{ github.event.pull_request.number }}
+            See the change with: git diff origin/${{ github.base_ref }}...HEAD
+            Check it for correctness bugs and for the rules in CLAUDE.md and AGENTS.md.
+            If it touches docs/issues/<NN>-*.md, check the work against that issue's tasks.
+            Write the review in Markdown: a one-line verdict, then numbered findings with
+            file:line, most severe first. Say so plainly if you find nothing. Don't praise
+            the code. Never include secrets or environment variable values.
+            Save it with the Write tool to claude-review.md at the repository root.
+            Don't post it yourself; the next workflow step posts it.
+          claude_args: >-
+            --max-turns 25
+            --allowedTools "Read,Grep,Glob,Write,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --disallowedTools "Edit,MultiEdit,Bash(gh pr comment:*),Bash(gh api:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files"
+      # Claude can read the token from its environment, so an injected
+      # instruction in a PR could put it in the review. This step, not Claude,
+      # posts the review, and refuses to post one that holds a secret.
+      - name: Post the review
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLAUDE_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s claude-review.md ]; then
+            echo "claude-review.md is missing or empty; nothing to post." >&2
+            exit 1
+          fi
+          for secret in "$CLAUDE_TOKEN" "$GH_TOKEN"; do
+            if [ -n "$secret" ] && grep -qF -- "$secret" claude-review.md; then
+              echo "claude-review.md contains a secret; not posting it." >&2
+              exit 1
+            fi
+          done
+          # Any Anthropic token or GitHub token shape, even one not set here.
+          if grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}' claude-review.md; then
+            echo "claude-review.md contains a token-like string; not posting it." >&2
+            exit 1
+          fi
+          gh pr comment "$PR" --body-file claude-review.md
+      # No prompt: the action answers the @claude comment in its own comment.
+      - name: Answer @claude
+        if: github.event_name == 'issue_comment'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          claude_args: >-
+            --max-turns 25
+            --allowedTools "Read,Grep,Glob,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --disallowedTools "Edit,MultiEdit,Write,Bash(git add:*),Bash(git commit:*),Bash(git push:*),mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files"

@@ -39,7 +39,7 @@ Write a pause note for the branch above, so a fresh session (or `/standup` tomor
 
    ## State
 
-   HEAD <sha> · <count> dirty files · MR !<N> (only when this conversation named one)
+   HEAD <sha> · <count> dirty files · PR #<N> (only when this conversation named one)
    ```
 
    When "Your note" above is non-empty, add it to the top of **Open** word for word, as `- Note: <text>`.
