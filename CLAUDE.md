@@ -8,15 +8,22 @@ These rules apply to this repo only and override the user's global defaults wher
 
 Use **pnpm** only. Never use npm or yarn, and commit only `pnpm-lock.yaml`.
 
-## GitLab and git actions
+## GitHub, GitLab mirror and git actions
 
-The repo lives on GitLab: `https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training` (remote `origin`). Use the `glab` CLI for issues and merge requests (MRs); MRs are referenced as `!N`, issues as `#N`. Finished work (issues #1–#4, #11 and #15, PRs #12–#17) stays on GitHub (remote `github`) as history; don't open new issues or PRs there.
+Work happens on GitHub: `https://github.com/ngocnguyenquang-agilityio/ai-tools-training` (remote `origin`). Use the `gh` CLI for issues and pull requests (PRs). Both are referenced as `#N`, because they share GitHub's counter. GitHub owns the issue numbers, and CI runs there (`.github/workflows/`).
 
-Claude may create GitLab issues, commit, push and open MRs, but **must ask the user and get an explicit yes before each action**. An earlier approval does not carry over to the next action.
+GitLab, `https://gitlab.asoft-python.com/ngoc.nguyenquang/ai-tools-training` (remote `gitlab`), is an end-of-day mirror:
 
-## Branch, commit and MR workflow (one issue = one branch = one MR)
+- `/sync-gitlab` fast-forwards its `feat/ai-tools` from GitHub and closes the GitLab copies of closed issues. `main` isn't mirrored: the two sites' `main` branches have no shared history.
+- Each new issue also gets a GitLab copy with the same title, whose description starts with the GitHub issue URL.
+- Don't open MRs or push issue branches there.
+- Run `glab` and git commands against `gitlab` in the Terminal panel (`run_in_terminal`), because the GitLab credentials live in the Windows keyring.
 
-The project skills run this workflow. `/new-issue` drafts and creates an issue, and `/start-issue <N>` cuts its branch and loads its tasks. When the work is done, use the `finish-issue` skill: it runs the checks and the review, updates the status docs, and hands over the commit, push and MR commands. The rules below are what those skills follow.
+Claude may create issues, commit, push, open PRs and sync GitLab, but **must ask the user and get an explicit yes before each action**. An earlier approval does not carry over to the next action.
+
+## Branch, commit and PR workflow (one issue = one branch = one PR)
+
+The project skills run this workflow. `/new-issue` drafts and creates an issue, and `/start-issue <N>` cuts its branch and loads its tasks. When the work is done, use the `finish-issue` skill: it runs the checks and the review, updates the status docs, and hands over the commit, push and PR commands. The rules below are what those skills follow.
 
 `feat/ai-tools` is the integration branch. Issue work always lives on its own issue branch.
 
@@ -28,16 +35,16 @@ The project skills run this workflow. `/new-issue` drafts and creates an issue, 
 
 1. **Branch:** start each issue from an up-to-date `feat/ai-tools`, on a new branch named `<type>/<issue>-<short-slug>`. Examples: `feat/2-jest-setup`, `chore/11-workflow-line-endings`.
 2. **Commits:** use `<type>(#<issue>): <message>`. Example: `feat(#2): set up Jest with next/jest and React Testing Library`.
-3. **Issue status:** before opening the MR, update the status docs in the issue branch so they merge with the work:
+3. **Issue status:** before opening the PR, update the status docs in the issue branch so they merge with the work:
    - In `docs/issues/<NN>-<slug>.md`, tick each finished task (`[x]`).
-   - In `docs/issues/README.md`, set the issue's **Where** cell to `GitLab (closed)`.
+   - In `docs/issues/README.md`, set the issue's **Where** cell to `GitHub (closed)`.
 
    Commit it as part of the issue, e.g. `<type>(#<issue>): mark issue done in docs/issues`. After the merge, `feat/ai-tools` already has the correct status, so it needs no follow-up commit.
 
-4. **MR:** push the branch and open an MR **into `feat/ai-tools`** (not `main`).
-   - Title: `[#<issue>] <GitLab issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
-   - Description: a summary, how it was verified, and `Closes #<issue>`. GitLab only auto-closes issues when an MR merges into the default branch, so merging into `feat/ai-tools` leaves the issue open.
-5. **Close the issue:** after the user merges the MR, run `glab issue close <issue>`, after asking first.
+4. **PR:** push the branch to `origin` and open a PR **into `feat/ai-tools`** (not `main`). CI must pass before merging.
+   - Title: `[#<issue>] <GitHub issue title>`. Example: `[#2] Set up Jest (next/jest) + React Testing Library`.
+   - Body: a summary, how it was verified, and `Closes #<issue>`.
+5. **Close the issue:** `feat/ai-tools` is GitHub's default branch, so merging the PR closes the issue through `Closes #<issue>`. Check it closed (`gh issue view <issue>`). If it didn't, ask first, then run `gh issue close <issue>`. The next `/sync-gitlab` closes its GitLab copy.
 
 ## Review before every commit
 
@@ -60,13 +67,14 @@ Before asking to commit:
 - **Hooks** (`.claude/hooks/`) enforce pnpm, format edited files, and run typecheck, lint and related Jest tests at the end of each turn. `notify.mjs` shows a desktop notification when Claude finishes a turn or waits for you. To turn it off, set `CLAUDE_NOTIFY=0` in your environment or under `env` in `.claude/settings.local.json`.
 - **Next.js docs:** before writing Next.js code, use the `next-docs` skill.
 - **Tests:** when writing or changing a Jest test, follow the `how-we-write-tests` skill.
-- **Personal commands:** `/wip` writes a pause note for the current branch to the gitignored `.claude/wip/`, and `/standup` builds your Yesterday / Today / Blockers report from your commits, your GitLab MRs and issues, and those notes.
+- **Personal commands:** `/wip` writes a pause note for the current branch to the gitignored `.claude/wip/`, and `/standup` builds your Yesterday / Today / Blockers report from your commits, your GitHub PRs and issues, and those notes. `/sync-gitlab` is the end-of-day GitLab mirror.
 - **UI checks:** after UI changes, the `ui-verifier` agent checks the page at 375px and desktop, in light and dark mode.
 - **Playwright MCP:** `.mcp.json` adds the `playwright` server (`pnpm dlx @playwright/mcp@latest`) to drive the running app from a session. Claude Code asks you to approve it on the first session start. It runs with plain `pnpm` on Windows too, without a `cmd /c` wrapper.
-- **GitHub MCP:** GitLab's built-in MCP server is turned off on our instance (see #26), so each developer can add GitHub's hosted server at local scope, not in `.mcp.json`. Run this in PowerShell: `claude mcp add --scope local --transport http github https://api.githubcopilot.com/mcp/ -H "Authorization: Bearer $(gh auth token)"`. Check `gh auth status` first: the command copies the current token, so re-run it after `gh auth` changes. Use it only for the GitHub history repo. Its writes (comments) need the same explicit yes as `glab`, and new issues and PRs stay on GitLab.
-- **`@claude` in CI:** the `claude-review` job in `.gitlab-ci.yml` reviews every MR and posts one note, once it's turned on. It's off until the project has a runner. Turn it on with the CI/CD variable `CLAUDE_REVIEW_ENABLED=true`. Evaluate its findings like any reviewer's. To ask Claude something by hand, run a pipeline with `AI_FLOW_INPUT` set. It needs the masked CI/CD variables `ANTHROPIC_API_KEY` and `GITLAB_ACCESS_TOKEN`. Don't mark them Protected, or MR pipelines on issue branches won't get them. Claude in CI gets read-only tools and runs without the GitLab token. The job posts the note, and it refuses to post one that contains a secret.
-- **Automation:** use `/goal` in a session for a bounded task with a checkable end. Scheduled tasks are personal and not committed: a local routine (Code tab → Routines → New routine → Local) can run `/standup` each weekday morning. Cloud routines (claude.ai/code/routines) only clone GitHub repos, so they can't work on this GitLab repo.
+- **GitHub MCP:** each developer can add GitHub's hosted server at local scope, not in `.mcp.json` (see #26). Run this in PowerShell: `claude mcp add --scope local --transport http github https://api.githubcopilot.com/mcp/ -H "Authorization: Bearer $(gh auth token)"`. Check `gh auth status` first: the command copies the current token, so re-run it after `gh auth` changes. Its writes (comments, issues, PRs) need the same explicit yes as `gh`.
+- **CI:** `.github/workflows/ci.yml` runs the five checks below on every PR into `feat/ai-tools` or `main`, and on pushes to `feat/ai-tools`.
+- **`@claude` in CI:** `.github/workflows/claude-review.yml` reviews every non-draft PR once per push and posts one comment. A collaborator's `@claude <request>` PR comment gets an answer. Claude can read and comment but not edit or push, and the job never blocks a merge. GitHub runs comment-triggered workflows from the default branch, so `@claude` needs the workflow on `feat/ai-tools`. Evaluate its findings like any reviewer's. It needs the repo secret `ANTHROPIC_API_KEY`.
+- **Automation:** use `/goal` in a session for a bounded task with a checkable end. Scheduled tasks are personal and not committed: a local routine (Code tab → Routines → New routine → Local) can run `/standup` each weekday morning, or `/sync-gitlab` each evening.
 
 ## Planning
 
-Implementation issues live in `docs/issues/`. Open issues are on GitLab; finished ones stay on GitHub (see [`docs/issues/README.md`](docs/issues/README.md)). Each piece of work maps to one issue. Issues #5–#10 were recreated on GitLab with their GitHub numbers. GitLab numbers new issues from #19 on, so they never reuse a GitHub issue or PR number.
+Implementation issues live in `docs/issues/`, one file per issue, named with its GitHub number (see [`docs/issues/README.md`](docs/issues/README.md)). Each piece of work maps to one issue. Issues #18–#27 were first made on GitLab, then copied to GitHub with the same numbers, so new issues start at #28 and never clash with a doc file.
