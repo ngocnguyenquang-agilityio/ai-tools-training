@@ -18,6 +18,7 @@ Only `feat/ai-tools` is mirrored. GitHub's `main` and GitLab's `main` are two un
 2. **Fast-forward check.** Run `git merge-base --is-ancestor gitlab/feat/ai-tools origin/feat/ai-tools`.
    - Exit 0 means GitLab can fast-forward. List the commits with `git log --oneline gitlab/feat/ai-tools..origin/feat/ai-tools`. No commits means it's already in sync, so skip step 3.
    - Exit 1 means GitLab has commits GitHub doesn't. Stop and show them (`git log --oneline origin/feat/ai-tools..gitlab/feat/ai-tools`). Never force-push.
+   - Any other exit (usually 128) means a ref is missing, most often because a fetch in step 1 failed. Name the missing ref (`git rev-parse --verify gitlab/feat/ai-tools` and `origin/feat/ai-tools`), report `feat/ai-tools: fetch failed`, and stop. Don't push or compare.
 3. **Push.** Show the user the commit list, then ask for a yes to run `git push gitlab origin/feat/ai-tools:refs/heads/feat/ai-tools` in the Terminal panel. Done when `git rev-parse gitlab/feat/ai-tools` equals `git rev-parse origin/feat/ai-tools` after another `git fetch gitlab`.
 4. **Issues.**
    - List the open GitLab issues with `glab issue list --opened --output json`. A copy is one whose `description` starts with a line `https://github.com/ngocnguyenquang-agilityio/ai-tools-training/issues/<N>`. Match that whole line, not a prefix, so `issues/2` never matches `issues/28`.
@@ -28,6 +29,6 @@ Only `feat/ai-tools` is mirrored. GitHub's `main` and GitLab's `main` are two un
 ## Report
 
 ```text
-feat/ai-tools: <in sync | pushed <k> commits | blocked: GitLab ahead>
+feat/ai-tools: <in sync | pushed <k> commits | blocked: GitLab ahead | fetch failed>
 Issues: <closed GitLab copies of #N, #M | none to close | glab unavailable>
 ```

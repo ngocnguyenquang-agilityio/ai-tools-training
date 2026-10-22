@@ -1,8 +1,8 @@
 # Claude Code GitHub Action: https://github.com/anthropics/claude-code-action
 #
 # Reviews every PR once when it opens or gets new commits, and answers
-# "@claude <request>" in PR comments. Claude reads the code and posts one
-# comment; it can't edit files or push.
+# "@claude <request>" in PR comments. Claude reads the code; it can't edit
+# files or push. For reviews, Claude writes a file and a later step posts it.
 #
 # It runs on the workflow's GITHUB_TOKEN (contents: read), not the Claude
 # GitHub App, so no app install is needed and a push would be refused.
@@ -55,6 +55,10 @@ jobs:
         with:
           # Full history, so the PR's merge-base exists for git diff.
           fetch-depth: 0
+      # A PR could commit its own claude-review.md; only Claude's may be posted.
+      - name: Clear any committed review file
+        if: github.event_name == 'pull_request'
+        run: rm -f claude-review.md
       - name: Review the PR
         if: github.event_name == 'pull_request'
         uses: anthropics/claude-code-action@v1
@@ -70,12 +74,38 @@ jobs:
             Write the review in Markdown: a one-line verdict, then numbered findings with
             file:line, most severe first. Say so plainly if you find nothing. Don't praise
             the code. Never include secrets or environment variable values.
-            Post it as exactly one comment with:
-            gh pr comment ${{ github.event.pull_request.number }} --body-file <file>
+            Save it with the Write tool to claude-review.md at the repository root.
+            Don't post it yourself; the next workflow step posts it.
           claude_args: >-
             --max-turns 25
-            --allowedTools "Read,Grep,Glob,Write,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*)"
-            --disallowedTools "Edit,MultiEdit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files"
+            --allowedTools "Read,Grep,Glob,Write,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --disallowedTools "Edit,MultiEdit,Bash(gh pr comment:*),Bash(gh api:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files"
+      # Claude can read the token from its environment, so an injected
+      # instruction in a PR could put it in the review. This step, not Claude,
+      # posts the review, and refuses to post one that holds a secret.
+      - name: Post the review
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLAUDE_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ! -s claude-review.md ]; then
+            echo "claude-review.md is missing or empty; nothing to post." >&2
+            exit 1
+          fi
+          for secret in "$CLAUDE_TOKEN" "$GH_TOKEN"; do
+            if [ -n "$secret" ] && grep -qF -- "$secret" claude-review.md; then
+              echo "claude-review.md contains a secret; not posting it." >&2
+              exit 1
+            fi
+          done
+          # Any Anthropic token or GitHub token shape, even one not set here.
+          if grep -qE 'sk-ant-[A-Za-z0-9_-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}' claude-review.md; then
+            echo "claude-review.md contains a token-like string; not posting it." >&2
+            exit 1
+          fi
+          gh pr comment "$PR" --body-file claude-review.md
       # No prompt: the action answers the @claude comment in its own comment.
       - name: Answer @claude
         if: github.event_name == 'issue_comment'
