@@ -91,9 +91,9 @@ describe("GET /api/tldr/[id]", () => {
     expect(consoleError).toHaveBeenCalledTimes(1);
   });
 
-  it("rethrows other errors, like a failed HN fetch", async () => {
-    mockGetTldr.mockRejectedValue(new Error("HN API request failed"));
+  it("rethrows errors that aren't a failed summary", async () => {
+    mockGetTldr.mockRejectedValue(new TypeError("bug"));
 
-    await expect(callRoute("42")).rejects.toThrow("HN API request failed");
+    await expect(callRoute("42")).rejects.toThrow("bug");
   });
 });

@@ -72,39 +72,45 @@ export function TldrButton({
         <SparklesIcon aria-hidden="true" />
         TL;DR
       </Button>
+      {/* The live region stays rendered: screen readers may not announce
+          content added to a region while it's `display: none`. */}
       <div
-        id={panelId}
-        hidden={!open}
         aria-live="polite"
         aria-busy={state.status === "loading"}
-        className="mt-2 basis-full rounded-lg bg-muted/50 p-3 text-foreground"
+        className="basis-full"
       >
-        {state.status === "loading" && (
-          <div role="status" className="flex flex-col gap-2">
-            <span className="sr-only">Loading summary</span>
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-11/12" />
-            <Skeleton className="h-4 w-4/5" />
-          </div>
-        )}
-        {state.status === "done" &&
-          (state.bullets.length > 0 ? (
-            <ul className="flex list-disc flex-col gap-1 pl-5">
-              {state.bullets.map((bullet, i) => (
-                <li key={i}>{bullet}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>Not enough discussion to summarize yet.</p>
-          ))}
-        {state.status === "error" && (
-          <p className="text-muted-foreground">{state.message}</p>
-        )}
-        {state.status === "done" && state.bullets.length > 0 && (
-          <p className="mt-2 text-xs text-muted-foreground">
-            AI summary of the comments; it can be wrong.
-          </p>
-        )}
+        <div
+          id={panelId}
+          hidden={!open}
+          className="mt-2 rounded-lg bg-muted/50 p-3 text-foreground"
+        >
+          {state.status === "loading" && (
+            <div role="status" className="flex flex-col gap-2">
+              <span className="sr-only">Loading summary</span>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-11/12" />
+              <Skeleton className="h-4 w-4/5" />
+            </div>
+          )}
+          {state.status === "done" &&
+            (state.bullets.length > 0 ? (
+              <ul className="flex list-disc flex-col gap-1 pl-5">
+                {state.bullets.map((bullet, i) => (
+                  <li key={i}>{bullet}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>Not enough discussion to summarize yet.</p>
+            ))}
+          {state.status === "error" && (
+            <p className="text-muted-foreground">{state.message}</p>
+          )}
+          {state.status === "done" && state.bullets.length > 0 && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              AI summary of the comments; it can be wrong.
+            </p>
+          )}
+        </div>
       </div>
     </>
   );

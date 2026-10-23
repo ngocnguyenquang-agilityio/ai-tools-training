@@ -50,18 +50,31 @@ function formatComments(comments: ThreadComment[]): string {
  *
  * Cached per story for an hour. The default cache is in memory, so that
  * bound holds per server process, not across instances; set a spend limit on
- * the Claude Console as well. Errors aren't cached, so a failed call retries.
+ * the Claude Console as well. Errors aren't cached, so a failed call retries;
+ * that's why a failed HN fetch throws rather than returning no bullets.
  */
 export async function getTldr(storyId: number): Promise<Tldr | null> {
   "use cache";
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86_400 });
 
-  const sample = await getThreadSample(storyId);
+  let sample;
+  try {
+    sample = await getThreadSample(storyId);
+  } catch (cause) {
+    throw new TldrFailedError(`couldn't load the thread (${String(cause)})`);
+  }
   if (!sample) return null;
-  if (
-    (sample.story.descendants ?? 0) < TLDR_MIN_COMMENTS ||
-    sample.comments.length === 0
-  ) {
+  if ((sample.story.descendants ?? 0) < TLDR_MIN_COMMENTS) {
+    return { bullets: [] };
+  }
+  // `descendants` counts dead and deleted comments too, so also gate on the
+  // comments actually sampled: Claude can't write three bullets from two.
+  if (sample.comments.length < TLDR_MIN_COMMENTS) {
+    if (sample.failed > 0) {
+      throw new TldrFailedError(
+        `${sample.failed} comment fetches failed, too few left`,
+      );
+    }
     return { bullets: [] };
   }
 

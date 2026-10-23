@@ -9,7 +9,12 @@ export type ThreadComment = {
   depth: number;
 };
 
-export type ThreadSample = { story: HNItem; comments: ThreadComment[] };
+export type ThreadSample = {
+  story: HNItem;
+  comments: ThreadComment[];
+  /** Comment fetches that failed and were skipped; more may exist on a retry. */
+  failed: number;
+};
 
 const ENTITIES: Record<string, string> = {
   amp: "&",
@@ -65,6 +70,7 @@ export async function getThreadSample(
   if (!isLiveStory(story)) return null;
 
   const comments: ThreadComment[] = [];
+  let failed = 0;
   let chars = 0;
   let level = story.kids ?? [];
 
@@ -76,6 +82,7 @@ export async function getThreadSample(
 
     for (const result of results) {
       if (chars >= maxChars) break;
+      if (result.status === "rejected") failed++;
       const item = result.status === "fulfilled" ? result.value : null;
       if (!isLiveComment(item)) continue;
       const text = htmlToText(item.text).slice(0, maxChars - chars);
@@ -89,5 +96,5 @@ export async function getThreadSample(
     level = next;
   }
 
-  return { story, comments };
+  return { story, comments, failed };
 }

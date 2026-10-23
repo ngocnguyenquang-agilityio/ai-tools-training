@@ -123,6 +123,7 @@ describe("getThreadSample", () => {
     const sample = await getThreadSample(1);
 
     expect(sample?.comments.map((c) => c.author)).toEqual(["user10", "user30"]);
+    expect(sample?.failed).toBe(1);
   });
 
   it("skips dead, deleted, null and empty comments, and their replies", async () => {
@@ -187,6 +188,7 @@ describe("getThreadSample", () => {
     expect(await getThreadSample(1)).toEqual({
       story: expect.objectContaining({ id: 1 }),
       comments: [],
+      failed: 0,
     });
   });
 });

@@ -44,6 +44,16 @@ describe("TldrButton", () => {
     expect(fetchMock).toHaveBeenCalledWith("/api/tldr/42");
   });
 
+  it("keeps the live region rendered while the panel is closed", () => {
+    const { container } = render(<TldrButton storyId={42} commentsCount={5} />);
+
+    const liveRegion = container.querySelector("[aria-live='polite']");
+    const panelId = tldrButton().getAttribute("aria-controls");
+
+    expect(liveRegion).not.toHaveAttribute("hidden");
+    expect(liveRegion?.querySelector(`[id='${panelId}']`)).not.toBeVisible();
+  });
+
   it("shows a loading skeleton while the summary loads", () => {
     global.fetch = jest.fn(
       () => new Promise(() => {}),
