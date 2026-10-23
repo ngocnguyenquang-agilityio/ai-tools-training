@@ -42,6 +42,26 @@ describe("NewsCard", () => {
     );
   });
 
+  it("links the domain badge to more stories from that site", () => {
+    render(<NewsCard story={story} now={now} />);
+
+    const badge = screen.getByRole("link", {
+      name: "More stories from example.com",
+    });
+    expect(badge).toHaveAttribute("href", "/search?site=example.com");
+    expect(badge).toHaveTextContent("example.com");
+    expect(badge).not.toHaveAttribute("target");
+  });
+
+  it("shows a domain that can't be searched, like example.com., as plain text", () => {
+    render(<NewsCard story={{ ...story, domain: "example.com." }} now={now} />);
+
+    expect(screen.getByText("example.com.")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /more stories from/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("links the comment count to the HN discussion", () => {
     render(<NewsCard story={story} now={now} />);
 

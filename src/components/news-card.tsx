@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { formatRelativeTime } from "@/lib/format";
 import type { Story } from "@/lib/hn/types";
+import { isSearchableSite, searchHref } from "@/lib/search-params";
 
 const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -33,7 +36,24 @@ export function NewsCard({ story, now }: NewsCardProps) {
         </CardTitle>
         {story.domain && (
           <CardAction>
-            <Badge variant="secondary">{story.domain}</Badge>
+            {isSearchableSite(story.domain) ? (
+              <Badge
+                variant="secondary"
+                // The variant's hover background barely shifts on a card, so
+                // underline like the card's other links.
+                className="hover:underline"
+                render={
+                  <Link
+                    href={searchHref({ site: story.domain })}
+                    aria-label={`More stories from ${story.domain}`}
+                  />
+                }
+              >
+                {story.domain}
+              </Badge>
+            ) : (
+              <Badge variant="secondary">{story.domain}</Badge>
+            )}
           </CardAction>
         )}
       </CardHeader>

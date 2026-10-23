@@ -15,6 +15,11 @@ export type HNItem = {
 
 export type Feed = "top" | "new" | "best";
 
+/** A keyword search, or every story linking to one site. */
+export type SearchQuery = { q: string } | { site: string };
+
+export type SearchSort = "relevance" | "date";
+
 /** Normalized story shape consumed by the UI. */
 export type Story = {
   id: number;
