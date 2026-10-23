@@ -20,6 +20,7 @@ Add a "TL;DR" button to busy stories that shows a three-bullet Claude summary of
 
 - On a story with many comments, TL;DR shows three bullets. A second click on the same story is answered from the cache.
 - Without `ANTHROPIC_API_KEY`, the button shows "Summary unavailable" and the rest of the page works.
+- `/api/tldr/<id>` answers 403, with no Claude call, for a story that isn't on the Top, New or Best feeds. Search results show no TL;DR button.
 - No test or CI job needs a real API key.
 - `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build` and `pnpm test` pass.
 

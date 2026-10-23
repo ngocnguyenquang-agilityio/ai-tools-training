@@ -36,7 +36,8 @@ export function htmlToText(html: string): string {
           entity[1].toLowerCase() === "x"
             ? parseInt(entity.slice(2), 16)
             : parseInt(entity.slice(1), 10);
-        return Number.isFinite(code) ? String.fromCodePoint(code) : match;
+        // fromCodePoint throws past U+10FFFF, so keep such text as written.
+        return code <= 0x10ffff ? String.fromCodePoint(code) : match;
       }
       return ENTITIES[entity.toLowerCase()] ?? match;
     })

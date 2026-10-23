@@ -69,6 +69,11 @@ describe("htmlToText", () => {
     ["named entities", "&quot;a&quot; &amp; b &gt; c", '"a" & b > c'],
     ["numeric entities", "it&#x27;s &#47;tmp", "it's /tmp"],
     ["an unknown entity", "&bogus; stays", "&bogus; stays"],
+    [
+      "numeric entities past U+10FFFF",
+      "&#99999999; &#x110000; stay",
+      "&#99999999; &#x110000; stay",
+    ],
     ["surrounding whitespace", "  <p>hi  ", "hi"],
   ])("converts %s", (_, html, expected) => {
     expect(htmlToText(html)).toBe(expected);
