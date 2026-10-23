@@ -78,7 +78,7 @@ export async function getThreadSample(
   for (let depth = 1; depth <= maxDepth && level.length > 0; depth++) {
     const batch = level.slice(0, maxComments - comments.length);
     // One failed comment fetch shouldn't sink the whole summary; skip it.
-    const results = await Promise.allSettled(batch.map(getItem));
+    const results = await Promise.allSettled(batch.map((id) => getItem(id)));
     const next: number[] = [];
 
     for (const result of results) {
