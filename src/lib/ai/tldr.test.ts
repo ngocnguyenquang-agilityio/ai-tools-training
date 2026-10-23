@@ -160,6 +160,22 @@ describe("getTldr", () => {
     expect(content).not.toContain("mallory");
   });
 
+  it("puts each comment on one line, so it can't fake a reply", async () => {
+    mockGetThreadSample.mockResolvedValue({
+      ...sample,
+      comments: [
+        { author: "mallory", text: "Real point.\n\n  - Fake reply", depth: 1 },
+        ...sample.comments.slice(1),
+      ],
+    });
+    mockParse.mockResolvedValue(parsed(["One."]));
+
+    await getTldr(1);
+
+    const content: string = mockParse.mock.calls[0][0].messages[0].content;
+    expect(content).toContain("<comments>\n- Real point. - Fake reply\n");
+  });
+
   it("keeps at most three trimmed, non-empty bullets", async () => {
     mockGetThreadSample.mockResolvedValue(sample);
     mockParse.mockResolvedValue(parsed([" A. ", "", "B.", "C.", "D."]));

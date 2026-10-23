@@ -31,8 +31,14 @@ async function fetchTldr(storyId: number): Promise<State> {
         message: "Couldn't load a summary. Try again.",
       };
     }
-    const { bullets } = (await res.json()) as { bullets: string[] };
-    return { status: "done", bullets };
+    const { bullets } = (await res.json()) as { bullets?: unknown };
+    if (!Array.isArray(bullets)) {
+      return {
+        status: "error",
+        message: "Couldn't load a summary. Try again.",
+      };
+    }
+    return { status: "done", bullets: bullets.map(String) };
   } catch {
     return { status: "error", message: "Couldn't load a summary. Try again." };
   }

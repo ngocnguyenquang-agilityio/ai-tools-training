@@ -109,6 +109,17 @@ describe("TldrButton", () => {
     expect(await screen.findByText(message)).toBeInTheDocument();
   });
 
+  it("shows an inline message when a 200 has no bullets array", async () => {
+    mockFetch({ summary: "unexpected" });
+    render(<TldrButton storyId={42} commentsCount={5} />);
+
+    fireEvent.click(tldrButton());
+
+    expect(
+      await screen.findByText("Couldn't load a summary. Try again."),
+    ).toBeInTheDocument();
+  });
+
   it("retries on the next open after a failure", async () => {
     const fetchMock = jest
       .fn()

@@ -37,9 +37,14 @@ const fenced = (text: string) =>
   text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // No usernames: the summary shouldn't name commenters, and depth shows threading.
+// Each comment is collapsed to one line, so its own line breaks, dashes or
+// indents can't pose as other comments or replies.
 function formatComments(comments: ThreadComment[]): string {
   return comments
-    .map(({ text, depth }) => `${"  ".repeat(depth - 1)}- ${fenced(text)}`)
+    .map(
+      ({ text, depth }) =>
+        `${"  ".repeat(depth - 1)}- ${fenced(text.replace(/\s+/g, " "))}`,
+    )
     .join("\n");
 }
 
