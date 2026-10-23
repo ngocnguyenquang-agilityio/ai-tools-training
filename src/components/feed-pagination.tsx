@@ -5,12 +5,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import type { Feed } from "@/lib/hn/types";
-
 type FeedPaginationProps = {
-  feed: Feed;
   page: number;
   totalPages: number;
+  /** The URL of a page, so a feed or a search can keep its own params. */
+  hrefFor: (page: number) => string;
 };
 
 const disabled = {
@@ -19,13 +18,12 @@ const disabled = {
 } as const;
 
 export function FeedPagination({
-  feed,
   page,
   totalPages,
+  hrefFor,
 }: FeedPaginationProps) {
   if (totalPages <= 1) return null;
 
-  const hrefFor = (target: number) => `/?feed=${feed}&page=${target}`;
   const hasPrevious = page > 1;
   const hasNext = page < totalPages;
 

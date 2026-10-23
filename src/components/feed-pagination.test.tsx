@@ -2,6 +2,9 @@ import { render, screen } from "@testing-library/react";
 
 import { FeedPagination } from "@/components/feed-pagination";
 
+const feedHref = (feed: string) => (page: number) =>
+  `/?feed=${feed}&page=${page}`;
+
 const previous = () => screen.getByLabelText("Go to previous page");
 const next = () => screen.getByLabelText("Go to next page");
 
@@ -14,8 +17,10 @@ const expectDisabled = (control: HTMLElement) => {
 };
 
 describe("FeedPagination", () => {
-  it("links Prev and Next to the neighbouring pages, keeping the feed", () => {
-    render(<FeedPagination feed="new" page={2} totalPages={5} />);
+  it("links Prev and Next to the hrefFor URLs of the neighbouring pages", () => {
+    render(
+      <FeedPagination page={2} totalPages={5} hrefFor={feedHref("new")} />,
+    );
 
     expect(
       screen.getByRole("link", { name: "Go to previous page" }),
@@ -27,14 +32,18 @@ describe("FeedPagination", () => {
   });
 
   it("disables Prev on the first page", () => {
-    render(<FeedPagination feed="top" page={1} totalPages={5} />);
+    render(
+      <FeedPagination page={1} totalPages={5} hrefFor={feedHref("top")} />,
+    );
 
     expectDisabled(previous());
     expect(next()).toHaveAttribute("href", "/?feed=top&page=2");
   });
 
   it("disables Next on the last page", () => {
-    render(<FeedPagination feed="best" page={5} totalPages={5} />);
+    render(
+      <FeedPagination page={5} totalPages={5} hrefFor={feedHref("best")} />,
+    );
 
     expectDisabled(next());
     expect(previous()).toHaveAttribute("href", "/?feed=best&page=4");
@@ -42,7 +51,11 @@ describe("FeedPagination", () => {
 
   it.each([0, 1])("renders nothing when there are %i pages", (totalPages) => {
     const { container } = render(
-      <FeedPagination feed="top" page={1} totalPages={totalPages} />,
+      <FeedPagination
+        page={1}
+        totalPages={totalPages}
+        hrefFor={feedHref("top")}
+      />,
     );
 
     expect(container).toBeEmptyDOMElement();

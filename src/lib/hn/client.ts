@@ -58,20 +58,33 @@ function isLiveStory(item: HNItem | null): item is HNItem {
   return item !== null && item.type === "story" && !item.deleted && !item.dead;
 }
 
-function toStory(item: HNItem): Story {
-  const commentsUrl = `${ITEM_URL_BASE}${item.id}`;
-  const webUrl = parseWebUrl(item.url);
+/**
+ * The link fields of a `Story`. A missing or non-web URL falls back to the HN
+ * discussion, with no domain. Shared with the Algolia search client.
+ */
+export function storyLinks(
+  id: number,
+  url: string | undefined,
+): Pick<Story, "url" | "domain" | "commentsUrl"> {
+  const commentsUrl = `${ITEM_URL_BASE}${id}`;
+  const webUrl = parseWebUrl(url);
 
+  return {
+    url: webUrl && url ? url : commentsUrl,
+    domain: webUrl ? webUrl.hostname.replace(/^www\./, "") : null,
+    commentsUrl,
+  };
+}
+
+function toStory(item: HNItem): Story {
   return {
     id: item.id,
     title: item.title ?? "",
-    url: webUrl && item.url ? item.url : commentsUrl,
-    domain: webUrl ? webUrl.hostname.replace(/^www\./, "") : null,
+    ...storyLinks(item.id, item.url),
     author: item.by ?? "",
     score: item.score ?? 0,
     commentsCount: item.descendants ?? 0,
     publishedAt: new Date(item.time * 1000),
-    commentsUrl,
   };
 }
 

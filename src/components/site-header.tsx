@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { SearchForm } from "@/components/search-form";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
@@ -15,6 +16,9 @@ export function SiteHeader() {
           </p>
         </div>
         <ThemeToggle />
+      </div>
+      <div className="mx-auto w-full max-w-3xl px-4 pb-4">
+        <SearchForm />
       </div>
     </header>
   );

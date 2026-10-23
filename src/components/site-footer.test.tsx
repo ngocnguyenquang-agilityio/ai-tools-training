@@ -11,4 +11,13 @@ describe("SiteFooter", () => {
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
+
+  it("credits HN Search by Algolia with an external link", () => {
+    render(<SiteFooter />);
+
+    const link = screen.getByRole("link", { name: "HN Search by Algolia" });
+    expect(link).toHaveAttribute("href", "https://hn.algolia.com/api");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
 });
