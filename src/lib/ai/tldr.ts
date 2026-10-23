@@ -81,22 +81,29 @@ export async function getTldr(storyId: number): Promise<Tldr | null> {
   // Built per call: the constructor reads ANTHROPIC_API_KEY, which the route
   // checks first so a missing key is a 503 rather than a crash.
   const client = new Anthropic();
-  const response = await client.messages.parse({
-    model: TLDR_MODEL,
-    // Room for low-effort thinking plus three short bullets; also caps the
-    // cost of a runaway reply.
-    max_tokens: 4096,
-    system: SYSTEM_PROMPT,
-    output_config: { effort: "low", format: zodOutputFormat(TldrSchema) },
-    messages: [
-      {
-        role: "user",
-        content:
-          `<title>${fenced(sample.story.title ?? "")}</title>\n\n` +
-          `<comments>\n${formatComments(sample.comments)}\n</comments>`,
-      },
-    ],
-  });
+  const response = await client.messages
+    .parse({
+      model: TLDR_MODEL,
+      // Room for low-effort thinking plus three short bullets; also caps the
+      // cost of a runaway reply.
+      max_tokens: 4096,
+      system: SYSTEM_PROMPT,
+      output_config: { effort: "low", format: zodOutputFormat(TldrSchema) },
+      messages: [
+        {
+          role: "user",
+          content:
+            `<title>${fenced(sample.story.title ?? "")}</title>\n\n` +
+            `<comments>\n${formatComments(sample.comments)}\n</comments>`,
+        },
+      ],
+    })
+    .catch((cause: unknown) => {
+      // API errors keep their type for the route; anything else, like output
+      // that fails the schema, is a failed summary too.
+      if (cause instanceof Anthropic.APIError) throw cause;
+      throw new TldrFailedError(`unusable response (${String(cause)})`);
+    });
 
   if (response.stop_reason === "refusal") {
     throw new TldrFailedError("Claude declined to summarize this thread");

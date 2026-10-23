@@ -7,12 +7,20 @@ import { getTldr, TLDR_MODEL, TldrFailedError } from "./tldr";
 
 const mockParse = jest.fn();
 
+/** Stands in for `Anthropic.APIError`, which getTldr rethrows as is. */
+class MockAPIError extends Error {}
+
 jest.mock("server-only", () => ({}));
 jest.mock("next/cache", () => ({ cacheLife: jest.fn() }));
 jest.mock("@/lib/hn/comments", () => ({ getThreadSample: jest.fn() }));
 jest.mock("@anthropic-ai/sdk", () => ({
   __esModule: true,
-  default: jest.fn(() => ({ messages: { parse: mockParse } })),
+  // A getter: the factory runs before this file's class declaration does.
+  default: Object.defineProperty(
+    jest.fn(() => ({ messages: { parse: mockParse } })),
+    "APIError",
+    { get: () => MockAPIError },
+  ),
 }));
 
 const mockGetThreadSample = jest.mocked(getThreadSample);
@@ -171,5 +179,23 @@ describe("getTldr", () => {
 
     await expect(result).rejects.toThrow(TldrFailedError);
     await expect(result).rejects.toThrow(message);
+  });
+
+  it("throws TldrFailedError when the output fails schema validation", async () => {
+    mockGetThreadSample.mockResolvedValue(sample);
+    mockParse.mockRejectedValue(new Error("Failed to parse structured output"));
+
+    const result = getTldr(1);
+
+    await expect(result).rejects.toThrow(TldrFailedError);
+    await expect(result).rejects.toThrow(/Failed to parse structured output/);
+  });
+
+  it("passes Claude API errors through unchanged", async () => {
+    const apiError = new MockAPIError("overloaded");
+    mockGetThreadSample.mockResolvedValue(sample);
+    mockParse.mockRejectedValue(apiError);
+
+    await expect(getTldr(1)).rejects.toBe(apiError);
   });
 });
