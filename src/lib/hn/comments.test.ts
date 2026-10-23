@@ -103,10 +103,10 @@ describe("getThreadSample", () => {
 
     expect(sample?.story.id).toBe(1);
     expect(sample?.comments).toEqual([
-      { author: "user10", text: "Comment 10", depth: 1 },
-      { author: "user20", text: "Comment 20", depth: 1 },
-      { author: "user11", text: "Comment 11", depth: 2 },
-      { author: "user21", text: "Comment 21", depth: 2 },
+      { text: "Comment 10", depth: 1 },
+      { text: "Comment 20", depth: 1 },
+      { text: "Comment 11", depth: 2 },
+      { text: "Comment 21", depth: 2 },
     ]);
   });
 
@@ -127,7 +127,10 @@ describe("getThreadSample", () => {
 
     const sample = await getThreadSample(1);
 
-    expect(sample?.comments.map((c) => c.author)).toEqual(["user10", "user30"]);
+    expect(sample?.comments.map((c) => c.text)).toEqual([
+      "Comment 10",
+      "Comment 30",
+    ]);
     expect(sample?.failed).toBe(1);
   });
 
@@ -146,7 +149,7 @@ describe("getThreadSample", () => {
 
     const sample = await getThreadSample(1);
 
-    expect(sample?.comments.map((c) => c.author)).toEqual(["user50"]);
+    expect(sample?.comments.map((c) => c.text)).toEqual(["Comment 50"]);
   });
 
   it("stops at maxComments without fetching further levels", async () => {
@@ -161,7 +164,10 @@ describe("getThreadSample", () => {
 
     const sample = await getThreadSample(1, { maxComments: 2 });
 
-    expect(sample?.comments.map((c) => c.author)).toEqual(["user10", "user20"]);
+    expect(sample?.comments.map((c) => c.text)).toEqual([
+      "Comment 10",
+      "Comment 20",
+    ]);
     expect(fetchMock).not.toHaveBeenCalledWith(
       `${API_BASE}/item/30.json`,
       expect.anything(),

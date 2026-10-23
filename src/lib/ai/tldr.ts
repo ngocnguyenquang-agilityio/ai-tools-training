@@ -12,6 +12,9 @@ export const TLDR_MODEL = "claude-haiku-5-5";
 
 const BULLET_COUNT = 3;
 
+const LONG_CACHE = { stale: 3600, revalidate: 3600, expire: 86_400 };
+const SHORT_CACHE = { stale: 300, revalidate: 300, expire: 3600 };
+
 const TldrSchema = z.object({ bullets: z.array(z.string()) });
 
 export type Tldr = { bullets: string[] };
@@ -36,8 +39,8 @@ Write exactly ${BULLET_COUNT} bullets, each one sentence of at most 25 words, on
 const fenced = (text: string) =>
   text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-// No usernames: the summary shouldn't name commenters, and depth shows threading.
-// Each comment is collapsed to one line, so its own line breaks, dashes or
+// The sample carries no usernames, so Claude can't name commenters; depth
+// shows threading. Each comment is collapsed to one line, so its own line breaks, dashes or
 // indents can't pose as other comments or replies.
 function formatComments(comments: ThreadComment[]): string {
   return comments
@@ -53,14 +56,23 @@ function formatComments(comments: ThreadComment[]): string {
  * live story. Stories under `TLDR_MIN_COMMENTS` get no bullets and no Claude
  * call, so the route can't be used to summarize every thread on HN.
  *
- * Cached per story for an hour. The default cache is in memory, so that
- * bound holds per server process, not across instances; set a spend limit on
- * the Claude Console as well. Errors aren't cached, so a failed call retries;
- * that's why a failed HN fetch throws rather than returning no bullets.
+ * A summary is cached per story for an hour; "not enough comments" only for
+ * 5 minutes, since a busy thread soon crosses the bar. The default cache is in
+ * memory, so these bounds hold per server process, not across instances; set
+ * a spend limit on the Claude Console as well. Errors aren't cached, so a
+ * failed call retries; that's why a failed HN fetch throws rather than
+ * returning no bullets.
  */
 export async function getTldr(storyId: number): Promise<Tldr | null> {
   "use cache";
-  cacheLife({ stale: 3600, revalidate: 3600, expire: 86_400 });
+
+  // Next allows one cacheLife call per run, so each return path makes its own
+  // (node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cacheLife.md,
+  // "Conditional cache lifetimes").
+  const tooFewComments = () => {
+    cacheLife(SHORT_CACHE);
+    return { bullets: [] };
+  };
 
   let sample;
   try {
@@ -68,9 +80,12 @@ export async function getTldr(storyId: number): Promise<Tldr | null> {
   } catch (cause) {
     throw new TldrFailedError(`couldn't load the thread (${String(cause)})`);
   }
-  if (!sample) return null;
+  if (!sample) {
+    cacheLife(LONG_CACHE);
+    return null;
+  }
   if ((sample.story.descendants ?? 0) < TLDR_MIN_COMMENTS) {
-    return { bullets: [] };
+    return tooFewComments();
   }
   // `descendants` counts dead and deleted comments too, so also gate on the
   // comments actually sampled: Claude can't write three bullets from two.
@@ -80,7 +95,7 @@ export async function getTldr(storyId: number): Promise<Tldr | null> {
         `${sample.failed} comment fetches failed, too few left`,
       );
     }
-    return { bullets: [] };
+    return tooFewComments();
   }
 
   // Built per call: the constructor reads ANTHROPIC_API_KEY, which the route
@@ -122,5 +137,6 @@ export async function getTldr(storyId: number): Promise<Tldr | null> {
       `no summary (stop_reason: ${response.stop_reason})`,
     );
   }
+  cacheLife(LONG_CACHE);
   return { bullets };
 }

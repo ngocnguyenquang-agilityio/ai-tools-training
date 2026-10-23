@@ -2,7 +2,6 @@ import { getItem, isLiveStory } from "./client";
 import type { HNItem } from "./types";
 
 export type ThreadComment = {
-  author: string;
   /** Plain text, HTML stripped. */
   text: string;
   /** 1 for a top-level comment, 2 for a reply to one, and so on. */
@@ -88,7 +87,7 @@ export async function getThreadSample(
       if (!isLiveComment(item)) continue;
       const text = htmlToText(item.text).slice(0, maxChars - chars);
       if (!text) continue;
-      comments.push({ author: item.by ?? "", text, depth });
+      comments.push({ text, depth });
       chars += text.length;
       next.push(...(item.kids ?? []));
     }
