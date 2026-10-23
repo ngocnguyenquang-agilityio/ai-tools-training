@@ -74,7 +74,8 @@ export async function SearchResults({
         <ol className="flex flex-col gap-4">
           {stories.map((story) => (
             <li key={story.id}>
-              <NewsCard story={story} now={now} />
+              {/* Search reaches stories off the feeds, which /api/tldr refuses. */}
+              <NewsCard story={story} now={now} tldr={false} />
             </li>
           ))}
         </ol>

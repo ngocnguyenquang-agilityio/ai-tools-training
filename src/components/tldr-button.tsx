@@ -19,6 +19,12 @@ async function fetchTldr(storyId: number): Promise<State> {
     if (res.status === 503) {
       return { status: "error", message: "Summary unavailable." };
     }
+    if (res.status === 403) {
+      return {
+        status: "error",
+        message: "This story has left the feeds, so it can't be summarized.",
+      };
+    }
     if (!res.ok) {
       return {
         status: "error",

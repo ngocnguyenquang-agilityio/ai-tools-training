@@ -22,9 +22,11 @@ type NewsCardProps = {
   story: Story;
   /** Reference time for the relative timestamp; pass one value for a whole list. */
   now?: Date;
+  /** Show the TL;DR button; the route only summarizes stories on the feeds. */
+  tldr?: boolean;
 };
 
-export function NewsCard({ story, now }: NewsCardProps) {
+export function NewsCard({ story, now, tldr = true }: NewsCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -69,7 +71,9 @@ export function NewsCard({ story, now }: NewsCardProps) {
         <a href={story.commentsUrl} {...external} className="hover:underline">
           {plural(story.commentsCount, "comment")}
         </a>
-        <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
+        {tldr && (
+          <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
+        )}
       </CardContent>
     </Card>
   );

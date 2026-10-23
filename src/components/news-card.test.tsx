@@ -83,6 +83,14 @@ describe("NewsCard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("leaves out the TL;DR when tldr is false", () => {
+    render(<NewsCard story={story} now={now} tldr={false} />);
+
+    expect(
+      screen.queryByRole("button", { name: "TL;DR" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("uses the singular for one point and one comment", () => {
     render(
       <NewsCard story={{ ...story, score: 1, commentsCount: 1 }} now={now} />,

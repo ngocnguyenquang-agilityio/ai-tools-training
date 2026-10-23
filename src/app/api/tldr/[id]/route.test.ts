@@ -5,13 +5,17 @@ import Anthropic from "@anthropic-ai/sdk";
 
 import { GET } from "@/app/api/tldr/[id]/route";
 import { getTldr, TldrFailedError } from "@/lib/ai/tldr";
+import { isOnAFeed } from "@/lib/hn/feed-ids";
 
 jest.mock("@/lib/ai/tldr", () => {
   class TldrFailedError extends Error {}
   return { getTldr: jest.fn(), TldrFailedError };
 });
 
+jest.mock("@/lib/hn/feed-ids", () => ({ isOnAFeed: jest.fn() }));
+
 const mockGetTldr = jest.mocked(getTldr);
+const mockIsOnAFeed = jest.mocked(isOnAFeed);
 
 const callRoute = (id: string) =>
   GET(new Request(`http://localhost/api/tldr/${id}`), {
@@ -23,6 +27,7 @@ const originalKey = process.env.ANTHROPIC_API_KEY;
 describe("GET /api/tldr/[id]", () => {
   beforeEach(() => {
     mockGetTldr.mockReset();
+    mockIsOnAFeed.mockReset().mockResolvedValue(true);
     process.env.ANTHROPIC_API_KEY = "test-key";
   });
 
@@ -61,7 +66,31 @@ describe("GET /api/tldr/[id]", () => {
     const res = await callRoute("42");
 
     expect(res.status).toBe(503);
+    expect(mockIsOnAFeed).not.toHaveBeenCalled();
     expect(mockGetTldr).not.toHaveBeenCalled();
+  });
+
+  it("answers 403 without calling Claude for a story that isn't on a feed", async () => {
+    mockIsOnAFeed.mockResolvedValue(false);
+
+    const res = await callRoute("42");
+
+    expect(res.status).toBe(403);
+    expect(mockIsOnAFeed).toHaveBeenCalledWith(42);
+    expect(mockGetTldr).not.toHaveBeenCalled();
+  });
+
+  it("answers 502 when the feed check fails", async () => {
+    mockIsOnAFeed.mockRejectedValue(new Error("HN API request failed: 500"));
+    const consoleError = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const res = await callRoute("42");
+
+    expect(res.status).toBe(502);
+    expect(mockGetTldr).not.toHaveBeenCalled();
+    expect(consoleError).toHaveBeenCalledTimes(1);
   });
 
   it("answers 404 when the ID isn't a live story", async () => {

@@ -63,6 +63,20 @@ describe("SearchResults", () => {
     expect(screen.getByText("Stories from lwn.net")).toBeInTheDocument();
   });
 
+  it("offers no TL;DR, since results can be off the feeds", async () => {
+    mockSearchStories.mockResolvedValue({
+      stories: [{ ...makeStory(1), commentsCount: 50 }],
+      totalPages: 1,
+    });
+
+    await renderSearch({ q: "rust" });
+
+    expect(screen.getByText("Story 1")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "TL;DR" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows a no-match message instead of a list", async () => {
     mockSearchStories.mockResolvedValue({ stories: [], totalPages: 0 });
 

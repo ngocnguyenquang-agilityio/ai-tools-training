@@ -29,7 +29,7 @@ Then open http://localhost:3000.
 
 ### AI summaries (optional)
 
-Stories with 5 or more comments get a **TL;DR** button. It shows a three-bullet summary of the discussion, written by Claude Haiku (`claude-haiku-5-5`). To turn it on, copy `.env.example` to `.env.local` (gitignored) and set your [Claude API key](https://platform.claude.com):
+Stories on the feeds with 5 or more comments get a **TL;DR** button (search results don't). It shows a three-bullet summary of the discussion, written by Claude Haiku (`claude-haiku-5-5`). To turn it on, copy `.env.example` to `.env.local` (gitignored) and set your [Claude API key](https://platform.claude.com):
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-...
@@ -37,7 +37,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 Restart `pnpm dev` after you change it. Without a key, the rest of the app works and the button shows "Summary unavailable". Tests mock the API, so they never need a key.
 
-Each story is summarized at most once an hour per server process, because the result is cached in memory, and stories under 5 comments are never sent to Claude. The `/api/tldr/<id>` route has no auth or rate limit, so set a monthly spend limit on the Claude Console before you deploy with a key.
+Each story is summarized at most once an hour per server process, because the result is cached in memory, and stories under 5 comments are never sent to Claude. The `/api/tldr/<id>` route only summarizes stories currently on the Top, New or Best feeds, but it has no auth or rate limit, so still set a monthly spend limit on the Claude Console before you deploy with a key.
 
 ## Scripts
 

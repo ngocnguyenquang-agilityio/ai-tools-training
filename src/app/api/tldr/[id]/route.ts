@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import { getTldr, TldrFailedError } from "@/lib/ai/tldr";
+import { isOnAFeed } from "@/lib/hn/feed-ids";
 
 const error = (status: number, message: string) =>
   Response.json({ error: message }, { status });
@@ -22,6 +23,19 @@ export async function GET(
   }
   if (!process.env.ANTHROPIC_API_KEY) {
     return error(503, "Summaries aren't set up on this server");
+  }
+
+  // The route is public, so only stories the app lists can cost a Claude
+  // call; a script can't walk every story ID on HN.
+  let onFeed: boolean;
+  try {
+    onFeed = await isOnAFeed(storyId);
+  } catch (cause) {
+    console.error(`TL;DR feed check for story ${storyId} failed:`, cause);
+    return error(502, "Couldn't summarize this discussion");
+  }
+  if (!onFeed) {
+    return error(403, "Summaries are only for stories on the feeds");
   }
 
   try {

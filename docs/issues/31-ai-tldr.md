@@ -11,7 +11,7 @@ Add a "TL;DR" button to busy stories that shows a three-bullet Claude summary of
   - [x] Cache it per story for an hour (`"use cache"` and `cacheLife`). The in-memory cache bounds this per server process.
   - [x] The system prompt asks for three neutral bullets and treats the title and comments as untrusted data. Angle brackets in user text are escaped so it can't close the fence, and commenter names aren't sent.
   - [x] Stories under 5 comments get no bullets and no Claude call (`TLDR_MIN_COMMENTS` in `src/lib/ai/tldr-config.ts`, shared with the button).
-- [x] `src/app/api/tldr/[id]/route.ts`: `GET` accepts a digits-only id for a live story and returns JSON. It returns 503 without an API key and 502 when the API call fails. The key never reaches the browser.
+- [x] `src/app/api/tldr/[id]/route.ts`: `GET` accepts a digits-only id for a live story and returns JSON. It returns 503 without an API key, 403 for a story that isn't on the Top, New or Best feeds (`src/lib/hn/feed-ids.ts`), and 502 when the feed check or the API call fails. Search results show no TL;DR button. The key never reaches the browser.
 - [x] `src/components/tldr-button.tsx` (client): shown on cards with 5 or more comments. It shows a skeleton while loading, the bullets in an `aria-live` region, and an inline error on failure.
 - [x] README: how to set `ANTHROPIC_API_KEY`, and a note to set a spend limit before deploying.
 - [x] Jest tests for the thread sampler, `getTldr` (SDK mocked), the route and the button.

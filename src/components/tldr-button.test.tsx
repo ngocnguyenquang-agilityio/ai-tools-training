@@ -94,6 +94,11 @@ describe("TldrButton", () => {
 
   it.each([
     ["503 (no API key)", 503, "Summary unavailable."],
+    [
+      "403 (story off the feeds)",
+      403,
+      "This story has left the feeds, so it can't be summarized.",
+    ],
     ["502 (Claude failed)", 502, "Couldn't load a summary. Try again."],
   ])("shows an inline message on %s", async (_, status, message) => {
     mockFetch({ error: "x" }, status);
