@@ -41,8 +41,9 @@ The project started on GitHub, moved to GitLab, and moved back to GitHub in #28.
 | 28  | Move day-to-day workflow to GitHub; GitLab as end-of-day mirror           | [28-github-workflow.md](28-github-workflow.md)               | none       | GitHub (closed) |
 | 30  | Search stories and filter by domain                                       | [30-search.md](30-search.md)                                 | #8         | GitHub (closed) |
 | 31  | AI TL;DR of a story's comment thread                                      | [31-ai-tldr.md](31-ai-tldr.md)                               | #30        | GitHub (closed) |
+| 33  | Fix /search metadata prefetch warning                                     | [33-search-metadata.md](33-search-metadata.md)               | #30        | GitHub (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28 have no dependencies. 8 → 30 → 31. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28 have no dependencies. 8 → 30 → {31, 33}. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
