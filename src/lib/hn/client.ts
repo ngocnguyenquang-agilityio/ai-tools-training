@@ -54,7 +54,7 @@ function parseWebUrl(url: string | undefined): URL | null {
   }
 }
 
-function isLiveStory(item: HNItem | null): item is HNItem {
+export function isLiveStory(item: HNItem | null): item is HNItem {
   return item !== null && item.type === "story" && !item.deleted && !item.dead;
 }
 
