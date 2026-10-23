@@ -5,6 +5,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+
 type FeedPaginationProps = {
   page: number;
   totalPages: number;

@@ -21,10 +21,11 @@ async function getSearchPage(
 
   const options = { sort, pageSize: PAGE_SIZE };
   const first = await searchStories(query, { ...options, page: requestedPage });
-  // Past the end, show the last page.
+  // Past the end, show the last page. With no results there's no page to
+  // fetch, so reuse the first (empty) response.
   const page = Math.min(requestedPage, Math.max(first.totalPages, 1));
   const { stories } =
-    page === requestedPage
+    page === requestedPage || first.totalPages === 0
       ? first
       : await searchStories(query, { ...options, page });
 

@@ -109,6 +109,19 @@ describe("SearchPage", () => {
     ).toHaveAttribute("href", "/search?q=rust&sort=date&page=3");
   });
 
+  it("makes one request for /search?q=zzzz&page=5 when nothing matches", async () => {
+    mockSearchStories.mockResolvedValue({ stories: [], totalPages: 0 });
+
+    await renderSearch({ q: "zzzz", page: "5" });
+
+    expect(mockSearchStories).toHaveBeenCalledTimes(1);
+    expect(mockSearchStories).toHaveBeenCalledWith(
+      { q: "zzzz" },
+      { sort: "relevance", page: 5, pageSize: 30 },
+    );
+    expect(screen.getByText(/no stories match/i)).toBeInTheDocument();
+  });
+
   it("clamps a page past the end to the last page", async () => {
     mockSearchStories
       .mockResolvedValueOnce({ stories: [], totalPages: 3 })
@@ -116,6 +129,7 @@ describe("SearchPage", () => {
 
     await renderSearch({ q: "rust", page: "99" });
 
+    expect(mockSearchStories).toHaveBeenCalledTimes(2);
     expect(mockSearchStories).toHaveBeenLastCalledWith(
       { q: "rust" },
       { sort: "relevance", page: 3, pageSize: 30 },
