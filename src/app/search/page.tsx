@@ -1,39 +1,10 @@
 import type { Metadata } from "next";
-import { cacheLife } from "next/cache";
+import { connection } from "next/server";
+import { Suspense } from "react";
 
-import { FeedPagination } from "@/components/feed-pagination";
-import { NewsCard } from "@/components/news-card";
-import { SortTabs } from "@/components/sort-tabs";
-import { searchStories } from "@/lib/hn/algolia";
-import type { SearchQuery, SearchSort } from "@/lib/hn/types";
-import { parseSearchParams, searchHref } from "@/lib/search-params";
+import { parseSearchParams } from "@/lib/search-params";
 
-const PAGE_SIZE = 30;
-
-/** Same caching as the home feed; the params become the cache key. */
-async function getSearchPage(
-  query: SearchQuery,
-  sort: SearchSort,
-  requestedPage: number,
-) {
-  "use cache";
-  cacheLife({ stale: 300, revalidate: 300, expire: 3600 });
-
-  const options = { sort, pageSize: PAGE_SIZE };
-  const first = await searchStories(query, { ...options, page: requestedPage });
-  // Past the end, show the last page. With no results there's no page to
-  // fetch, so reuse the first (empty) response.
-  const page = Math.min(requestedPage, Math.max(first.totalPages, 1));
-  const { stories } =
-    page === requestedPage || first.totalPages === 0
-      ? first
-      : await searchStories(query, { ...options, page });
-
-  return { stories, page, totalPages: first.totalPages, now: new Date() };
-}
-
-const queryLabel = (query: SearchQuery) =>
-  "site" in query ? `Stories from ${query.site}` : `Search: ${query.q}`;
+import { queryLabel, SearchResults } from "./search-results";
 
 export async function generateMetadata({
   searchParams,
@@ -44,52 +15,31 @@ export async function generateMetadata({
   };
 }
 
-export default async function SearchPage({
-  searchParams,
-}: PageProps<"/search">) {
-  const {
-    query,
-    sort,
-    page: requestedPage,
-  } = parseSearchParams(await searchParams);
+const Connection = async () => {
+  await connection();
+  return null;
+};
 
-  if (!query) {
-    return (
-      <p className="py-16 text-center text-muted-foreground">
-        Type a word or phrase in the search box to search Hacker News stories.
-      </p>
-    );
-  }
-
-  const { stories, page, totalPages, now } = await getSearchPage(
-    query,
-    sort,
-    requestedPage,
-  );
-
+/**
+ * Renders nothing, but tells Next.js the page is meant to render per request,
+ * so `generateMetadata` may read `searchParams` without blocking the page's
+ * prefetch (node_modules/next/dist/docs/01-app/03-api-reference/04-functions/generate-metadata.md,
+ * "With Cache Components").
+ */
+function DynamicMarker() {
   return (
-    <div className="flex flex-col gap-6">
-      {/* Not a heading: story titles are the page's h2s, as on the home page. */}
-      <p className="text-lg font-semibold break-words">{queryLabel(query)}</p>
-      <SortTabs query={query} sort={sort} />
-      {stories.length === 0 ? (
-        <p className="py-16 text-center text-muted-foreground">
-          No stories match. Try other words.
-        </p>
-      ) : (
-        <ol className="flex flex-col gap-4">
-          {stories.map((story) => (
-            <li key={story.id}>
-              <NewsCard story={story} now={now} />
-            </li>
-          ))}
-        </ol>
-      )}
-      <FeedPagination
-        page={page}
-        totalPages={totalPages}
-        hrefFor={(target) => searchHref(query, { sort, page: target })}
-      />
-    </div>
+    <Suspense>
+      <Connection />
+    </Suspense>
+  );
+}
+
+// Not async: awaiting here would keep the marker out of the prerendered shell.
+export default function SearchPage({ searchParams }: PageProps<"/search">) {
+  return (
+    <>
+      <SearchResults searchParams={searchParams} />
+      <DynamicMarker />
+    </>
   );
 }
