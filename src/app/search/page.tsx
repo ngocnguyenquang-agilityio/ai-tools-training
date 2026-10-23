@@ -15,10 +15,10 @@ export async function generateMetadata({
   };
 }
 
-const Connection = async () => {
+async function Connection() {
   await connection();
   return null;
-};
+}
 
 /**
  * Renders nothing, but tells Next.js the page is meant to render per request,

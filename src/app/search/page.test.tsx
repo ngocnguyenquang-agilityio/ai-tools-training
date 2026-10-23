@@ -1,4 +1,5 @@
-import { isValidElement, type ReactElement } from "react";
+import { connection } from "next/server";
+import { isValidElement, type ReactElement, Suspense } from "react";
 
 import SearchPage, { generateMetadata } from "@/app/search/page";
 import { SearchResults } from "@/app/search/search-results";
@@ -16,18 +17,28 @@ const props = (searchParams: SearchParams) => ({
 describe("SearchPage", () => {
   // Rendering needs the server runtime (`connection()`), so this checks the
   // tree the page returns; SearchResults has its own render tests.
-  it("passes searchParams to SearchResults without awaiting them, next to a dynamic marker", () => {
+  it("passes searchParams to SearchResults without awaiting them", () => {
     const pageProps = props({ q: "rust" });
 
-    const page = SearchPage(pageProps) as ReactElement<{
-      children: ReactElement<{ searchParams?: unknown }>[];
-    }>;
+    const [results] = SearchPage(pageProps).props.children;
 
-    const [results, marker] = page.props.children;
     expect(isValidElement(results) && results.type).toBe(SearchResults);
     // toBe, not toEqual: toEqual treats any two Promises as equal.
     expect(results.props.searchParams).toBe(pageProps.searchParams);
-    expect(isValidElement(marker)).toBe(true);
+  });
+
+  it("renders a marker that calls connection() inside Suspense", async () => {
+    const [, marker] = SearchPage(props({ q: "rust" })).props.children;
+
+    // Unwrap the marker by hand: it isn't exported, and rendering it needs
+    // the server runtime.
+    const boundary = (marker.type as () => ReactElement)();
+    const { children: inner } = boundary.props as { children: ReactElement };
+    const rendered = await (inner.type as () => Promise<null>)();
+
+    expect(boundary.type).toBe(Suspense);
+    expect(connection).toHaveBeenCalledTimes(1);
+    expect(rendered).toBeNull();
   });
 });
 
