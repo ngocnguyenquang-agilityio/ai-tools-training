@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { TldrButton } from "@/components/tldr-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -68,6 +69,7 @@ export function NewsCard({ story, now }: NewsCardProps) {
         <a href={story.commentsUrl} {...external} className="hover:underline">
           {plural(story.commentsCount, "comment")}
         </a>
+        <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
       </CardContent>
     </Card>
   );

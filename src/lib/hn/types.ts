@@ -9,6 +9,12 @@ export type HNItem = {
   url?: string;
   score?: number;
   descendants?: number;
+  /** IDs of direct replies, in ranked display order. */
+  kids?: number[];
+  /** HTML body of a comment or text post. */
+  text?: string;
+  /** The item a comment replies to. */
+  parent?: number;
   deleted?: boolean;
   dead?: boolean;
 };
