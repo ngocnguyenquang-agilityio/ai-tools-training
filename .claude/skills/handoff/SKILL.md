@@ -7,7 +7,7 @@ argument-hint: "[focus for the next session]"
 
 # Handoff
 
-Compact this conversation into one note per branch. It replaces the old `/wip` command, and `/standup` reads it.
+Compact this conversation into one note per branch. It replaces the old `/wip` command, and `/standup` reads it. Notes the old `/wip` wrote already use this format, so they need no migration.
 
 ## Steps
 
