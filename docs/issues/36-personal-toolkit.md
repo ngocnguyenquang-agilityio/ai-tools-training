@@ -14,7 +14,7 @@ Replace the old `paul` framework with a small self-contained toolkit of rules, s
 
 - `CLAUDE.md` imports all eight rule files, and each file exists under `.claude/rules/`.
 - `/handoff` writes `.claude/wip/<branch>.md` in the format `/standup` reads.
-- `/commit-msg` and `/pr-body` print output in this repo's format and run no git command.
+- `/commit-msg` and `/pr-body` print output in this repo's format and never commit, push or create a PR.
 - `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build` and `pnpm test` pass.
 
 ## Depends on

@@ -11,7 +11,7 @@ Compact this conversation into one note per branch. It replaces the old `/wip` c
 
 ## Steps
 
-1. Gather: `git branch --show-current`, `git rev-parse --short HEAD`, `date "+%Y-%m-%d %H:%M"`, `git status --porcelain`, `git diff --stat HEAD`, and `git log --oneline feat/ai-tools..HEAD`.
+1. Gather: `git branch --show-current`, `git rev-parse --short HEAD`, `date "+%Y-%m-%d %H:%M"`, `git status --porcelain`, `git diff --stat HEAD`, and `git log --oneline origin/feat/ai-tools..HEAD` (the remote ref, because the local one can be stale).
 2. Write `.claude/wip/<branch>.md` (gitignored; create the folder if needed), with every `/` in the branch name replaced by `-` (`chore/24-personal-commands` becomes `chore-24-personal-commands.md`). Overwrite the file: one note per branch, always the latest.
 3. Parse `N` from a `<type>/<N>-<slug>` branch name. On any other branch, leave `(#N)` out of the title.
 4. Print the path so the user can paste it into a new session.

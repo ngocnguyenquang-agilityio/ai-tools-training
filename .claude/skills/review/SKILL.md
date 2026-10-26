@@ -9,7 +9,7 @@ Review everything pending, committed or not. Run it once at the end of a unit of
 
 ## Gather
 
-- **Fixed point**: `git merge-base HEAD feat/ai-tools` (the integration branch every PR targets).
+- **Fixed point**: `git fetch origin feat/ai-tools`, then `git merge-base HEAD origin/feat/ai-tools` (the integration branch every PR targets; the remote ref, because the local one can be stale).
 - **Diff**: `git diff <merge-base>` (working tree vs merge-base, so uncommitted work is included).
 - **New files**: `git status --porcelain`; read untracked files directly.
 - **Spec**: the issue file `docs/issues/<NN>-*.md`; the number comes from the branch name `<type>/<N>-<slug>`. If there is no issue, skip the Spec axis. Do not block on asking.

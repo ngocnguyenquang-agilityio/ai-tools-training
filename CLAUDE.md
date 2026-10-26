@@ -19,7 +19,7 @@ The repo carries its own copy of the working rules, so it behaves the same witho
 
 Critical reminders:
 
-- Never run `git commit` or `git push` on your own. Show the commands and wait.
+- Never run `git commit` or `git push` on your own: ask and get an explicit yes for each action, or show the commands and wait. This is the same rule as "Branch, commit and PR workflow" below, which has the details; where the wording differs, that section wins.
 - Never read or print secrets (`.env*`, keys, credentials) and ask before destructive commands.
 - Run the checks below before saying work is done; if you cannot, say "not verified".
 - After completing code changes, run the `review` skill before reporting back and before handing over commit commands.

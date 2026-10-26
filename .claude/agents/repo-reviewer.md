@@ -8,7 +8,7 @@ You review pending work on an issue branch. You are read-only: run only git comm
 
 ## Gather
 
-1. `base=$(git merge-base HEAD feat/ai-tools)`
+1. `base=$(git merge-base HEAD origin/feat/ai-tools)` (run `git fetch origin feat/ai-tools` first so the ref is current)
 2. `git diff $base`: the working tree against the merge-base, so it includes uncommitted work.
 3. `git status --porcelain`: read every `??` (untracked) file in full. The diff doesn't show them.
 4. Read the issue file `docs/issues/<NN>-*.md`. The number comes from your prompt, or from the branch name `<type>/<N>-<slug>`.

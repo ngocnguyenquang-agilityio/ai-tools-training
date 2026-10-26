@@ -7,7 +7,7 @@ Bring the current `<type>/<N>-<slug>` branch to a ready-to-commit state. You com
 
 1. **Identify.** Read `N`, `type` and the slug from `git branch --show-current`. Read `docs/issues/<NN>-*.md`. If the branch name doesn't match the pattern, stop and ask. If you started this skill on your own (the user didn't type `/finish-issue`), confirm with the user that the issue is done before going on, because step 4 marks it closed.
 2. **Checks green.** Run `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build` and `pnpm test`. Done when all five pass. Fix failures before going on.
-3. **Review.** Run the `review` skill with the issue number. It spawns the `repo-reviewer` agent, which reviews uncommitted and untracked work against the merge-base with `feat/ai-tools`.
+3. **Review.** Run the `review` skill with the issue number. It spawns the `repo-reviewer` agent, which reviews uncommitted and untracked work against the merge-base with `origin/feat/ai-tools`. If `/commit-msg` or an earlier review already covered this same diff, don't review twice.
    - Fix every hard violation and spec gap.
    - Re-run step 2 after the fixes.
    - Keep the judgement calls for the report.
