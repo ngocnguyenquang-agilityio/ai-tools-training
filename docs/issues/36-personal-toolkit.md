@@ -1,4 +1,4 @@
-﻿## Goal
+## Goal
 
 Replace the old `paul` framework with a small self-contained toolkit of rules, skills and commands inside the repo, so the working rules behave the same without any personal global setup.
 
