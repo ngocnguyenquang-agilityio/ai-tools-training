@@ -5,7 +5,7 @@ description: Review all pending changes before reporting work done. Use after fi
 
 # Review
 
-Review everything pending, committed or not. Run it once at the end of a unit of work, not after every edit. Skip it when the diff contains no code (docs or config text only).
+Review everything pending, committed or not. Run it once at the end of a unit of work, not after every edit. Before a commit handoff it always runs, even on a docs or config diff, so the issue spec is still checked. Skip it only for an ad hoc docs or config edit that is not headed for a commit.
 
 ## Gather
 

@@ -1,6 +1,6 @@
 # Security
 
-- Do not read or print `.env*`, `*.pem`, `~/.ssh`, credential files or `node_modules`.
+- Do not read or print `.env*`, `*.pem`, `~/.ssh`, or credential files. Do not read `node_modules` either, except the bundled Next.js docs in `node_modules/next/dist/docs/` that `AGENTS.md` requires.
 - Never hardcode secrets, tokens or keys. Use environment variables and tell me which ones are needed.
 - Redact secrets in logs, handoffs and any output you write.
 - Ask before destructive commands: `rm -rf`, `git reset --hard`, force push, dropping data, overwriting files you have not read.

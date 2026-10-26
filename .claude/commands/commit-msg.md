@@ -7,7 +7,7 @@ disable-model-invocation: true
 Draft a commit message for the pending work. Print only; never run `git add`, `git commit` or `git push`.
 
 1. Find the merge-base of the current branch with `feat/ai-tools`. Read `git diff <merge-base>` and `git status --porcelain` (read untracked files too).
-2. Run the `review` skill on this work. Fix Block and Should fix items and re-run typecheck and tests first.
+2. Run the `review` skill on this work. Fix Block and Should fix items and re-run the checks listed in `CLAUDE.md` first.
 3. Print, in code blocks:
    - The commit message.
    - The exact `git add` and `git commit` commands for me to run.
