@@ -4,6 +4,26 @@
 
 These rules apply to this repo only and override the user's global defaults where they conflict.
 
+## Working rules
+
+The repo carries its own copy of the working rules, so it behaves the same without any personal global setup. The files live in `.claude/rules/`.
+
+@.claude/rules/communication.md
+@.claude/rules/git.md
+@.claude/rules/review.md
+@.claude/rules/code-style.md
+@.claude/rules/testing.md
+@.claude/rules/security.md
+@.claude/rules/scope.md
+@.claude/rules/workflow.md
+
+Critical reminders:
+
+- Never run `git commit` or `git push` on your own. Show the commands and wait.
+- Never read or print secrets (`.env*`, keys, credentials) and ask before destructive commands.
+- Run the checks below before saying work is done; if you cannot, say "not verified".
+- After completing code changes, run the `review` skill before reporting back and before handing over commit commands.
+
 ## Package manager
 
 Use **pnpm** only. Never use npm or yarn, and commit only `pnpm-lock.yaml`.
@@ -50,8 +70,8 @@ The project skills run this workflow. `/new-issue` drafts and creates an issue, 
 
 Before asking to commit:
 
-1. Spawn the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) on the pending work. It reviews uncommitted and untracked files against the merge-base with `feat/ai-tools`, for correctness, these rules and the issue spec. For this repo, this replaces the global `mattpocock-skills:code-review` rule.
-2. Fix hard violations and spec gaps, then re-run the checks below.
+1. Run the `review` skill (`.claude/skills/review/`). It uses the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) for the Correctness, Standards and Spec axes, and adds its own Tests, Security and Scope axes. The agent reviews uncommitted and untracked files against the merge-base with `feat/ai-tools`, these rules and the issue spec.
+2. Fix hard violations (the skill's Block items) and spec gaps, then re-run the checks below.
 3. Show the user the remaining judgement-call findings, then ask for permission to commit.
 
 ## Checks
@@ -65,9 +85,10 @@ Before asking to commit:
 ## Claude tooling
 
 - **Hooks** (`.claude/hooks/`) enforce pnpm, format edited files, and run typecheck, lint and related Jest tests at the end of each turn. `notify.mjs` shows a desktop notification when Claude finishes a turn or waits for you. To turn it off, set `CLAUDE_NOTIFY=0` in your environment or under `env` in `.claude/settings.local.json`.
+- **Working skills:** `grill` (settle vague requests before acting), `plan` (small verifiable steps), `tdd` (test-first), `debug` (root cause before fix), `review` (pre-commit review), and `handoff` (manual only; writes the branch's pause note to the gitignored `.claude/wip/<branch>.md` for the next session and `/standup`). **Commands:** `/commit-msg [hint]` and `/pr-body [target]` print a commit message or PR description in this repo's format; they never run git.
 - **Next.js docs:** before writing Next.js code, use the `next-docs` skill.
 - **Tests:** when writing or changing a Jest test, follow the `how-we-write-tests` skill.
-- **Personal commands:** `/wip` writes a pause note for the current branch to the gitignored `.claude/wip/`, and `/standup` builds your Yesterday / Today / Blockers report from your commits, your GitHub PRs and issues, and those notes. `/sync-gitlab` is the end-of-day GitLab mirror.
+- **Personal commands:** `/standup` builds your Yesterday / Today / Blockers report from your commits, your GitHub PRs and issues, and the `handoff` notes in `.claude/wip/`. `/sync-gitlab` is the end-of-day GitLab mirror.
 - **UI checks:** after UI changes, the `ui-verifier` agent checks the page at 375px and desktop, in light and dark mode.
 - **Playwright MCP:** `.mcp.json` adds the `playwright` server (`pnpm dlx @playwright/mcp@latest`) to drive the running app from a session. Claude Code asks you to approve it on the first session start. It runs with plain `pnpm` on Windows too, without a `cmd /c` wrapper.
 - **GitHub MCP:** each developer can add GitHub's hosted server at local scope, not in `.mcp.json` (see #26). Run this in PowerShell: `claude mcp add --scope local --transport http github https://api.githubcopilot.com/mcp/ -H "Authorization: Bearer $(gh auth token)"`. Check `gh auth status` first: the command copies the current token, so re-run it after `gh auth` changes. Its writes (comments, issues, PRs) need the same explicit yes as `gh`.

@@ -1,5 +1,5 @@
 ---
-description: Write my standup (Yesterday / Today / Blockers) from my git commits, my GitHub PRs and issues, and the /wip notes.
+description: Write my standup (Yesterday / Today / Blockers) from my git commits, my GitHub PRs and issues, and the handoff notes.
 argument-hint: [since, e.g. "3 days"]
 allowed-tools: Bash(git config user.email), Bash(git log:*), Bash(date:*), Bash(gh pr list:*), Bash(gh issue list:*), Read, Glob
 ---
@@ -16,7 +16,7 @@ Write a standup report for me, ready to paste into team chat.
 
 1. **Window.** If "Window override" is non-empty, use it as git's `--since` value (`3 days`, `2026-10-15`). Otherwise start at 00:00 of the previous working day: on Monday that's Friday, on any other day it's yesterday. Pass it as an absolute `"YYYY-MM-DD 00:00"`, because git reads `yesterday` as 24 hours back. Say the window in the report's first line.
 2. **Commits.** Run `git log --all --no-merges --author="<my email>" --since="<window>" --format="%h %ad %s" --date=short`. Group the commits by issue, using the `(#N)` in each commit subject.
-3. **WIP notes.** Glob `.claude/wip/*.md` and read each note. Their **Next** items feed Today, and their **Open** items feed Blockers.
+3. **Handoff notes.** Written by the `handoff` skill. Glob `.claude/wip/*.md` and read each note. Their **Next** items feed Today, and their **Open** items feed Blockers.
 4. **GitHub.** Run three queries in Bash:
    - `gh pr list --author @me --state merged --search "merged:>=<window start date>"` gives Yesterday's merge refs.
    - `gh pr list --author @me` and `gh issue list --assignee @me` give what's still open.
