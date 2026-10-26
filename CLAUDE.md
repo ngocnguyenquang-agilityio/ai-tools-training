@@ -70,8 +70,8 @@ The project skills run this workflow. `/new-issue` drafts and creates an issue, 
 
 Before asking to commit:
 
-1. Run the `review` skill (`.claude/skills/review/`). It uses the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) for the Correctness, Standards and Spec axes, and adds its own Tests, Security and Scope axes. The agent reviews uncommitted and untracked files against the merge-base with `feat/ai-tools`, these rules and the issue spec.
-2. Fix hard violations (the skill's Block items) and spec gaps, then re-run the checks below.
+1. Run the `review` skill (`.claude/skills/review/`). It uses the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) for the Correctness, Standards and Spec axes, and adds its own Tests, Security and Scope axes. The agent reviews uncommitted and untracked files against the merge-base with `origin/feat/ai-tools`, these rules and the issue spec.
+2. Fix hard violations (the skill's Block items), spec gaps and Should fix items (Standards and Tests problems). The skill then re-runs the checks below.
 3. Show the user the remaining judgement-call findings, then ask for permission to commit.
 
 ## Checks

@@ -38,7 +38,7 @@ Spawn the `repo-reviewer` agent (`.claude/agents/repo-reviewer.md`) with the iss
 
 ## After the review
 
-Fix Block and Should fix items, then re-run the checks listed in `CLAUDE.md` (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build`, `pnpm test`). Report:
+Fix Block and Should fix items, then re-run the checks listed in `CLAUDE.md` (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm build`, `pnpm test`). This skill owns that re-run: callers such as `finish-issue` and `/commit-msg` don't repeat it. Report:
 
 1. One-line verdict: clean, or has Block items.
 2. Findings by level, each with `file:line`, the problem, the fix, and whether it is "fixed" or "needs your decision".
