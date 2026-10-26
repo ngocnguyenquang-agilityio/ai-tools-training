@@ -9,11 +9,22 @@ export type HNItem = {
   url?: string;
   score?: number;
   descendants?: number;
+  /** IDs of direct replies, in ranked display order. */
+  kids?: number[];
+  /** HTML body of a comment or text post. */
+  text?: string;
+  /** The item a comment replies to. */
+  parent?: number;
   deleted?: boolean;
   dead?: boolean;
 };
 
 export type Feed = "top" | "new" | "best";
+
+/** A keyword search, or every story linking to one site. */
+export type SearchQuery = { q: string } | { site: string };
+
+export type SearchSort = "relevance" | "date";
 
 /** Normalized story shape consumed by the UI. */
 export type Story = {

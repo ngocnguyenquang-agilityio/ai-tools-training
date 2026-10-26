@@ -11,6 +11,15 @@ export function SiteFooter() {
         >
           Hacker News API
         </a>
+        . Search results from{" "}
+        <a
+          href="https://hn.algolia.com/api"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-foreground"
+        >
+          HN Search by Algolia
+        </a>
         .
       </div>
     </footer>

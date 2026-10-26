@@ -42,6 +42,26 @@ describe("NewsCard", () => {
     );
   });
 
+  it("links the domain badge to more stories from that site", () => {
+    render(<NewsCard story={story} now={now} />);
+
+    const badge = screen.getByRole("link", {
+      name: "More stories from example.com",
+    });
+    expect(badge).toHaveAttribute("href", "/search?site=example.com");
+    expect(badge).toHaveTextContent("example.com");
+    expect(badge).not.toHaveAttribute("target");
+  });
+
+  it("shows a domain that can't be searched, like example.com., as plain text", () => {
+    render(<NewsCard story={{ ...story, domain: "example.com." }} now={now} />);
+
+    expect(screen.getByText("example.com.")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /more stories from/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("links the comment count to the HN discussion", () => {
     render(<NewsCard story={story} now={now} />);
 
@@ -49,6 +69,26 @@ describe("NewsCard", () => {
     expect(comments).toHaveAttribute("href", story.commentsUrl);
     expect(comments).toHaveAttribute("target", "_blank");
     expect(comments).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("offers a TL;DR on a story with 5 or more comments only", () => {
+    const { rerender } = render(<NewsCard story={story} now={now} />);
+
+    expect(screen.getByRole("button", { name: "TL;DR" })).toBeInTheDocument();
+
+    rerender(<NewsCard story={{ ...story, commentsCount: 4 }} now={now} />);
+
+    expect(
+      screen.queryByRole("button", { name: "TL;DR" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("leaves out the TL;DR when tldr is false", () => {
+    render(<NewsCard story={story} now={now} tldr={false} />);
+
+    expect(
+      screen.queryByRole("button", { name: "TL;DR" }),
+    ).not.toBeInTheDocument();
   });
 
   it("uses the singular for one point and one comment", () => {

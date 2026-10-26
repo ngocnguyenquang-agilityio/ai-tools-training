@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+import { TldrButton } from "@/components/tldr-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { formatRelativeTime } from "@/lib/format";
 import type { Story } from "@/lib/hn/types";
+import { isSearchableSite, searchHref } from "@/lib/search-params";
 
 const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -18,9 +22,11 @@ type NewsCardProps = {
   story: Story;
   /** Reference time for the relative timestamp; pass one value for a whole list. */
   now?: Date;
+  /** Show the TL;DR button; the route only summarizes stories on the feeds. */
+  tldr?: boolean;
 };
 
-export function NewsCard({ story, now }: NewsCardProps) {
+export function NewsCard({ story, now, tldr = true }: NewsCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -33,7 +39,24 @@ export function NewsCard({ story, now }: NewsCardProps) {
         </CardTitle>
         {story.domain && (
           <CardAction>
-            <Badge variant="secondary">{story.domain}</Badge>
+            {isSearchableSite(story.domain) ? (
+              <Badge
+                variant="secondary"
+                // The variant's hover background barely shifts on a card, so
+                // underline like the card's other links.
+                className="hover:underline"
+                render={
+                  <Link
+                    href={searchHref({ site: story.domain })}
+                    aria-label={`More stories from ${story.domain}`}
+                  />
+                }
+              >
+                {story.domain}
+              </Badge>
+            ) : (
+              <Badge variant="secondary">{story.domain}</Badge>
+            )}
           </CardAction>
         )}
       </CardHeader>
@@ -48,6 +71,9 @@ export function NewsCard({ story, now }: NewsCardProps) {
         <a href={story.commentsUrl} {...external} className="hover:underline">
           {plural(story.commentsCount, "comment")}
         </a>
+        {tldr && (
+          <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
+        )}
       </CardContent>
     </Card>
   );

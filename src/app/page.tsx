@@ -58,7 +58,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           ))}
         </ol>
       )}
-      <FeedPagination feed={feed} page={page} totalPages={totalPages} />
+      <FeedPagination
+        page={page}
+        totalPages={totalPages}
+        hrefFor={(target) => `/?feed=${feed}&page=${target}`}
+      />
     </div>
   );
 }
