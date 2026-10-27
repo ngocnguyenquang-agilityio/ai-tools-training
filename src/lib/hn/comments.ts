@@ -98,3 +98,75 @@ export async function getThreadSample(
 
   return { story, comments, failed };
 }
+
+export type CommentNode = {
+  id: number;
+  author: string;
+  publishedAt: Date;
+  /** Plain text, HTML stripped. */
+  text: string;
+  replies: CommentNode[];
+};
+
+export type CommentTree = {
+  story: HNItem;
+  comments: CommentNode[];
+};
+
+/** A story's discussion as a nested tree, in HN's ranked order. */
+export async function getCommentTree(
+  storyId: number,
+  {
+    maxDepth = 3,
+    maxComments = 100,
+  }: { maxDepth?: number; maxComments?: number } = {},
+): Promise<CommentTree | null> {
+  const story = await getItem(storyId);
+  if (!isLiveStory(story)) return null;
+
+  const comments: CommentNode[] = [];
+  let level = (story.kids ?? []).map((id) => ({ id, into: comments }));
+  let count = 0;
+
+  // Level by level, so the top of each thread wins over deep sub-threads.
+  for (let depth = 1; depth <= maxDepth && level.length > 0; depth++) {
+    const next: typeof level = [];
+
+    // Fetch only as many as the budget has room for; skipped comments leave
+    // room, so keep going until it is full or the level runs out.
+    for (let rest = level; rest.length > 0 && count < maxComments;) {
+      const batch = rest.slice(0, maxComments - count);
+      rest = rest.slice(batch.length);
+      // One failed comment fetch shouldn't sink the page; skip it.
+      const results = await Promise.allSettled(
+        batch.map(({ id }) => getItem(id)),
+      );
+
+      results.forEach((result, index) => {
+        const item = result.status === "fulfilled" ? result.value : null;
+        // A skipped comment takes its replies with it: they would have no
+        // parent to nest under.
+        if (!isLiveComment(item)) return;
+        const text = htmlToText(item.text);
+        // Nothing left to show (markup only), so it is skipped like a dead one.
+        if (!text) return;
+
+        const node: CommentNode = {
+          id: item.id,
+          author: item.by ?? "",
+          publishedAt: new Date(item.time * 1000),
+          text,
+          replies: [],
+        };
+        batch[index].into.push(node);
+        count++;
+        next.push(
+          ...(item.kids ?? []).map((id) => ({ id, into: node.replies })),
+        );
+      });
+    }
+    level = next;
+  }
+
+  return { story, comments };
+}

@@ -62,13 +62,12 @@ describe("NewsCard", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("links the comment count to the HN discussion", () => {
+  it("links the comment count to the story page, in the same tab", () => {
     render(<NewsCard story={story} now={now} />);
 
     const comments = screen.getByRole("link", { name: "45 comments" });
-    expect(comments).toHaveAttribute("href", story.commentsUrl);
-    expect(comments).toHaveAttribute("target", "_blank");
-    expect(comments).toHaveAttribute("rel", "noopener noreferrer");
+    expect(comments).toHaveAttribute("href", `/story/${story.id}`);
+    expect(comments).not.toHaveAttribute("target");
   });
 
   it("offers a TL;DR on a story with 5 or more comments only", () => {

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { getThreadSample, htmlToText } from "./comments";
+import { getCommentTree, getThreadSample, htmlToText } from "./comments";
 import type { HNItem } from "./types";
 
 const API_BASE = "https://hacker-news.firebaseio.com/v0";
@@ -201,5 +201,155 @@ describe("getThreadSample", () => {
       comments: [],
       failed: 0,
     });
+  });
+});
+
+describe("getCommentTree", () => {
+  it("nests replies under their parent in HN's ranked order, as plain text", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2, 3]),
+        comment(2, { text: "<i>First</i> &amp; best", kids: [4] }),
+        comment(3),
+        comment(4, { text: "A reply" }),
+      ]),
+    );
+
+    const tree = await getCommentTree(1);
+
+    expect(tree?.story.id).toBe(1);
+    expect(tree?.comments).toEqual([
+      {
+        id: 2,
+        author: "user2",
+        publishedAt: new Date("2023-11-14T22:13:20Z"),
+        text: "First & best",
+        replies: [
+          {
+            id: 4,
+            author: "user4",
+            publishedAt: new Date("2023-11-14T22:13:20Z"),
+            text: "A reply",
+            replies: [],
+          },
+        ],
+      },
+      {
+        id: 3,
+        author: "user3",
+        publishedAt: new Date("2023-11-14T22:13:20Z"),
+        text: "Comment 3",
+        replies: [],
+      },
+    ]);
+  });
+
+  it.each([
+    ["a comment", [comment(1)]],
+    ["a dead story", [{ ...story(1, []), dead: true }]],
+    ["a deleted story", [{ ...story(1, []), deleted: true }]],
+  ])("returns null for %s", async (_label, items) => {
+    mockFetch(itemRoutes(items));
+
+    await expect(getCommentTree(1)).resolves.toBeNull();
+  });
+
+  it("returns null when HN has no such item", async () => {
+    mockFetch({ [`${API_BASE}/item/1.json`]: null });
+
+    await expect(getCommentTree(1)).resolves.toBeNull();
+  });
+
+  it("skips dead, deleted, empty and failed comments along with their replies", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2, 3, 4, 5, 6]),
+        comment(2, { dead: true, kids: [7] }),
+        comment(3, { deleted: true, text: undefined }),
+        comment(4, { text: undefined }),
+        // 5 has no route, so its fetch fails with a 404.
+        comment(6),
+        comment(7),
+      ]),
+    );
+
+    const tree = await getCommentTree(1);
+
+    expect(tree?.comments.map(({ id }) => id)).toEqual([6]);
+  });
+
+  it("stops at 3 levels by default", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2]),
+        comment(2, { kids: [3] }),
+        comment(3, { kids: [4] }),
+        comment(4, { kids: [5] }),
+        comment(5),
+      ]),
+    );
+
+    const tree = await getCommentTree(1);
+
+    const level3 = tree?.comments[0].replies[0].replies[0];
+    expect(level3?.id).toBe(4);
+    expect(level3?.replies).toEqual([]);
+  });
+
+  it("honours a custom maxDepth", async () => {
+    mockFetch(
+      itemRoutes([story(1, [2]), comment(2, { kids: [3] }), comment(3)]),
+    );
+
+    const tree = await getCommentTree(1, { maxDepth: 1 });
+
+    expect(tree?.comments).toEqual([
+      expect.objectContaining({ id: 2, replies: [] }),
+    ]);
+  });
+
+  it("keeps the top-ranked comments when over maxComments, counting replies", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2, 3, 4]),
+        comment(2, { kids: [5] }),
+        comment(3),
+        comment(4),
+        comment(5),
+      ]),
+    );
+
+    const tree = await getCommentTree(1, { maxComments: 3 });
+
+    expect(tree?.comments.map(({ id }) => id)).toEqual([2, 3, 4]);
+    expect(tree?.comments[0].replies).toEqual([]);
+  });
+
+  it("fills maxComments with later comments when earlier ones are skipped", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2, 3, 4, 5, 6]),
+        comment(2, { dead: true }),
+        comment(3, { deleted: true, text: undefined }),
+        comment(4),
+        comment(5),
+        comment(6),
+      ]),
+    );
+
+    const tree = await getCommentTree(1, { maxComments: 2 });
+
+    expect(tree?.comments.map(({ id }) => id)).toEqual([4, 5]);
+  });
+
+  it("does not fetch comments beyond maxComments", async () => {
+    const fetchMock = mockFetch(
+      itemRoutes([story(1, [2, 3, 4]), comment(2), comment(3), comment(4)]),
+    );
+
+    await getCommentTree(1, { maxComments: 2 });
+
+    // The story plus two comments.
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
