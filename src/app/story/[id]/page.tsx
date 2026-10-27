@@ -34,7 +34,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/story/[id]">): Promise<Metadata> {
   const { story } = await getThreadOrNotFound(params);
-  return { title: `${story.title ?? "Story"} · Tech News` };
+  return { title: `${storyTitle(story)} · Tech News` };
 }
 
 function countComments(comments: CommentNode[]): number {

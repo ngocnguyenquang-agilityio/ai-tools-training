@@ -136,6 +136,17 @@ describe("StoryPage", () => {
 describe("generateMetadata", () => {
   beforeEach(() => mockGetCommentTree.mockReset());
 
+  it("falls back to a generic title when HN omits the story's title", async () => {
+    mockGetCommentTree.mockResolvedValue({
+      story: { ...story, title: undefined },
+      comments: [],
+    });
+
+    await expect(generateMetadata(props("7"))).resolves.toEqual({
+      title: "Story · Tech News",
+    });
+  });
+
   it("titles the page after the story", async () => {
     mockGetCommentTree.mockResolvedValue({ story, comments: [] });
 

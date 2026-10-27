@@ -143,6 +143,7 @@ export async function getCommentTree(
       // to nest under.
       if (!isLiveComment(item)) return;
       const text = htmlToText(item.text);
+      // Nothing left to show (markup only), so it is skipped like a dead one.
       if (!text) return;
 
       const node: CommentNode = {
