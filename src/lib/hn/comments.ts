@@ -139,6 +139,8 @@ export async function getCommentTree(
 
     results.forEach((result, index) => {
       const item = result.status === "fulfilled" ? result.value : null;
+      // A skipped comment takes its replies with it: they would have no parent
+      // to nest under.
       if (!isLiveComment(item)) return;
       const text = htmlToText(item.text);
       if (!text) return;
