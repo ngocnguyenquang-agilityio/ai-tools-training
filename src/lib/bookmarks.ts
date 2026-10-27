@@ -26,11 +26,20 @@ function readRaw(): string | null {
 
 function isStoredStory(value: unknown): value is StoredStory {
   if (typeof value !== "object" || value === null) return false;
-  const { id, publishedAt } = value as Partial<StoredStory>;
+  const story = value as Partial<StoredStory>;
+  // Every field `NewsCard` reads, so a half-written entry reads as missing
+  // instead of crashing the page.
   return (
-    typeof id === "number" &&
-    typeof publishedAt === "string" &&
-    !Number.isNaN(Date.parse(publishedAt))
+    typeof story.id === "number" &&
+    typeof story.title === "string" &&
+    typeof story.url === "string" &&
+    (story.domain === null || typeof story.domain === "string") &&
+    typeof story.author === "string" &&
+    typeof story.score === "number" &&
+    typeof story.commentsCount === "number" &&
+    typeof story.commentsUrl === "string" &&
+    typeof story.publishedAt === "string" &&
+    !Number.isNaN(Date.parse(story.publishedAt))
   );
 }
 

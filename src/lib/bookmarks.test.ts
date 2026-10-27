@@ -59,6 +59,8 @@ describe("getBookmarks", () => {
         7,
         { id: "x", publishedAt: "2026-01-15T09:00:00.000Z" },
         { id: 2, publishedAt: "not a date" },
+        { id: 4, publishedAt: "2026-01-15T09:00:00.000Z" },
+        { ...makeStory(5), title: 5, publishedAt: "2026-01-15T09:00:00.000Z" },
         { ...makeStory(3), publishedAt: "2026-01-15T09:00:00.000Z" },
       ]),
     );
