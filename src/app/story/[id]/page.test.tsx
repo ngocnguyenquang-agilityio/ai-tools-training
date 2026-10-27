@@ -117,6 +117,21 @@ describe("StoryPage", () => {
     expect(screen.getByText("No comments yet.")).toBeInTheDocument();
   });
 
+  it("doesn't claim there are no comments when HN counts some that were all skipped", async () => {
+    mockGetCommentTree.mockResolvedValue({
+      story: { ...story, descendants: 3 },
+      comments: [],
+    });
+
+    render(await StoryPage(props("7")));
+
+    expect(screen.queryByText("No comments yet.")).not.toBeInTheDocument();
+    expect(screen.getByText("No comments to show here.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /full discussion on hacker news/i }),
+    ).toBeInTheDocument();
+  });
+
   it.each([
     ["a non-numeric ID", "abc"],
     ["a partly numeric ID", "12abc"],

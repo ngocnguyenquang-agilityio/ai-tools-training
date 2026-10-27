@@ -92,7 +92,9 @@ export default async function StoryPage({ params }: PageProps<"/story/[id]">) {
       </header>
 
       {comments.length === 0 ? (
-        <p className="text-muted-foreground">No comments yet.</p>
+        <p className="text-muted-foreground">
+          {total > 0 ? "No comments to show here." : "No comments yet."}
+        </p>
       ) : (
         <ul aria-label="Comments" className="flex flex-col gap-4">
           {comments.map((comment) => (
