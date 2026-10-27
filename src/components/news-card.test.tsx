@@ -91,6 +91,14 @@ describe("NewsCard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("offers a save button for the story, even without a TL;DR", () => {
+    render(<NewsCard story={story} now={now} tldr={false} />);
+
+    expect(
+      screen.getByRole("button", { name: `Save ${story.title}` }),
+    ).toBeInTheDocument();
+  });
+
   it("uses the singular for one point and one comment", () => {
     render(
       <NewsCard story={{ ...story, score: 1, commentsCount: 1 }} now={now} />,

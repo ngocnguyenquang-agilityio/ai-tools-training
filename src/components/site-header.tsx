@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { SearchForm } from "@/components/search-form";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { buttonVariants } from "@/components/ui/button";
 
 export function SiteHeader() {
   return (
@@ -15,7 +16,12 @@ export function SiteHeader() {
             The top technology stories from Hacker News.
           </p>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-1">
+          <Link href="/saved" className={buttonVariants({ variant: "ghost" })}>
+            Saved
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
       <div className="mx-auto w-full max-w-3xl px-4 pb-4">
         <SearchForm />

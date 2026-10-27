@@ -14,6 +14,15 @@ describe("SiteHeader", () => {
     expect(screen.getByRole("search")).toHaveAttribute("action", "/search");
   });
 
+  it("links to the saved stories", () => {
+    render(<SiteHeader />);
+
+    expect(screen.getByRole("link", { name: "Saved" })).toHaveAttribute(
+      "href",
+      "/saved",
+    );
+  });
+
   it("renders the site name as the page heading, linking home", () => {
     render(<SiteHeader />);
 
