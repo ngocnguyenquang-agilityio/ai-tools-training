@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import { cacheLife } from "next/cache";
 
 import StoryPage, { generateMetadata } from "@/app/story/[id]/page";
 import { type CommentNode, getCommentTree } from "@/lib/hn/comments";
@@ -8,6 +9,7 @@ jest.mock("next/cache", () => ({ cacheLife: jest.fn() }));
 jest.mock("@/lib/hn/comments", () => ({ getCommentTree: jest.fn() }));
 
 const mockGetCommentTree = jest.mocked(getCommentTree);
+const mockCacheLife = jest.mocked(cacheLife);
 
 const story: HNItem = {
   id: 7,
@@ -166,6 +168,21 @@ describe("StoryPage", () => {
     await expect(StoryPage(props(id))).rejects.toThrow(/NEXT_HTTP_ERROR/);
 
     expect(mockGetCommentTree).not.toHaveBeenCalled();
+  });
+
+  it("keeps a live story cached for 5 minutes but a missing one for 30 seconds", async () => {
+    mockCacheLife.mockClear();
+    mockGetCommentTree.mockResolvedValueOnce({ story, comments: [] });
+    mockGetCommentTree.mockResolvedValueOnce(null);
+
+    render(await StoryPage(props("7")));
+    await expect(StoryPage(props("8"))).rejects.toThrow(/NEXT_HTTP_ERROR/);
+
+    expect(mockCacheLife.mock.calls.map(([profile]) => profile)).toEqual([
+      { stale: 300, revalidate: 300, expire: 3600 },
+      { stale: 300, revalidate: 300, expire: 3600 },
+      { stale: 30, revalidate: 30, expire: 60 },
+    ]);
   });
 
   it("is not found when the ID isn't a live story", async () => {

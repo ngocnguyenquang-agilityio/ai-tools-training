@@ -130,33 +130,41 @@ export async function getCommentTree(
 
   // Level by level, so the top of each thread wins over deep sub-threads.
   for (let depth = 1; depth <= maxDepth && level.length > 0; depth++) {
-    level = level.slice(0, maxComments - count);
-    // One failed comment fetch shouldn't sink the page; skip it.
-    const results = await Promise.allSettled(
-      level.map(({ id }) => getItem(id)),
-    );
     const next: typeof level = [];
 
-    results.forEach((result, index) => {
-      const item = result.status === "fulfilled" ? result.value : null;
-      // A skipped comment takes its replies with it: they would have no parent
-      // to nest under.
-      if (!isLiveComment(item)) return;
-      const text = htmlToText(item.text);
-      // Nothing left to show (markup only), so it is skipped like a dead one.
-      if (!text) return;
+    // Fetch only as many as the budget has room for; skipped comments leave
+    // room, so keep going until it is full or the level runs out.
+    for (let rest = level; rest.length > 0 && count < maxComments;) {
+      const batch = rest.slice(0, maxComments - count);
+      rest = rest.slice(batch.length);
+      // One failed comment fetch shouldn't sink the page; skip it.
+      const results = await Promise.allSettled(
+        batch.map(({ id }) => getItem(id)),
+      );
 
-      const node: CommentNode = {
-        id: item.id,
-        author: item.by ?? "",
-        publishedAt: new Date(item.time * 1000),
-        text,
-        replies: [],
-      };
-      level[index].into.push(node);
-      count++;
-      next.push(...(item.kids ?? []).map((id) => ({ id, into: node.replies })));
-    });
+      results.forEach((result, index) => {
+        const item = result.status === "fulfilled" ? result.value : null;
+        // A skipped comment takes its replies with it: they would have no
+        // parent to nest under.
+        if (!isLiveComment(item)) return;
+        const text = htmlToText(item.text);
+        // Nothing left to show (markup only), so it is skipped like a dead one.
+        if (!text) return;
+
+        const node: CommentNode = {
+          id: item.id,
+          author: item.by ?? "",
+          publishedAt: new Date(item.time * 1000),
+          text,
+          replies: [],
+        };
+        batch[index].into.push(node);
+        count++;
+        next.push(
+          ...(item.kids ?? []).map((id) => ({ id, into: node.replies })),
+        );
+      });
+    }
     level = next;
   }
 

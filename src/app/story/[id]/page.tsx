@@ -16,6 +16,8 @@ async function getThread(storyId: number) {
   cacheLife({ stale: 300, revalidate: 300, expire: 3600 });
 
   const tree = await getCommentTree(storyId);
+  // A story HN reports as missing may be a blip; don't pin the 404 for minutes.
+  if (!tree) cacheLife({ stale: 30, revalidate: 30, expire: 60 });
   // Captured inside the cache scope so relative times match the cached render.
   return tree && { ...tree, now: new Date() };
 }

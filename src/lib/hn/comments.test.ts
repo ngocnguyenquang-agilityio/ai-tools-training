@@ -325,6 +325,23 @@ describe("getCommentTree", () => {
     expect(tree?.comments[0].replies).toEqual([]);
   });
 
+  it("fills maxComments with later comments when earlier ones are skipped", async () => {
+    mockFetch(
+      itemRoutes([
+        story(1, [2, 3, 4, 5, 6]),
+        comment(2, { dead: true }),
+        comment(3, { deleted: true, text: undefined }),
+        comment(4),
+        comment(5),
+        comment(6),
+      ]),
+    );
+
+    const tree = await getCommentTree(1, { maxComments: 2 });
+
+    expect(tree?.comments.map(({ id }) => id)).toEqual([4, 5]);
+  });
+
   it("does not fetch comments beyond maxComments", async () => {
     const fetchMock = mockFetch(
       itemRoutes([story(1, [2, 3, 4]), comment(2), comment(3), comment(4)]),
