@@ -49,8 +49,14 @@ function Comment({ comment, now }: { comment: CommentNode; now: Date }) {
     <li>
       <details open>
         <summary className="cursor-pointer text-muted-foreground">
-          <span className="font-medium text-foreground">{comment.author}</span>{" "}
-          ·{" "}
+          {comment.author && (
+            <>
+              <span className="font-medium text-foreground">
+                {comment.author}
+              </span>{" "}
+              ·{" "}
+            </>
+          )}
           <time dateTime={comment.publishedAt.toISOString()}>
             {formatRelativeTime(comment.publishedAt, now)}
           </time>

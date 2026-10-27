@@ -70,6 +70,19 @@ describe("StoryPage", () => {
     expect(screen.getByText(expected)).toBeInTheDocument();
   });
 
+  it("leaves out the author of a comment when HN omits it", async () => {
+    mockGetCommentTree.mockResolvedValue({
+      story,
+      comments: [comment(1, { author: "" })],
+    });
+
+    render(await StoryPage(props("7")));
+
+    const summary = screen.getByText("Comment 1").previousElementSibling;
+    expect(summary).not.toHaveTextContent("·");
+    expect(summary?.querySelector("time")).toBeInTheDocument();
+  });
+
   it("falls back to a generic heading when HN omits the title", async () => {
     mockGetCommentTree.mockResolvedValue({
       story: { ...story, title: undefined },
