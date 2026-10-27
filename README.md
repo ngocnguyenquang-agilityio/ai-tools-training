@@ -27,6 +27,10 @@ pnpm dev
 
 Then open http://localhost:3000.
 
+### Saved stories
+
+The **Save** button on a story card keeps it on the **Saved** page. Saved stories live in your browser's `localStorage`, so they stay on this device and browser, need no account, and show the score and comment count from when you saved them.
+
 ### AI summaries (optional)
 
 Stories on the feeds with 5 or more comments get a **TL;DR** button (search results don't). It shows a three-bullet summary of the discussion, written by Claude Haiku (`claude-haiku-5-5`). To turn it on, copy `.env.example` to `.env.local` (gitignored) and set your [Claude API key](https://platform.claude.com):
@@ -52,6 +56,7 @@ Each story is summarized at most once an hour per server process, because the re
 | `pnpm typecheck`    | Generate route types, then run `tsc --noEmit` |
 | `pnpm test`         | Run the Jest tests                            |
 | `pnpm test:watch`   | Run Jest in watch mode                        |
+| `pnpm test:e2e`     | Build the app and run the Playwright tests    |
 
 ## Project structure
 
@@ -60,6 +65,7 @@ src/
   app/              Routes, layout and global styles (App Router)
   components/ui/    shadcn/ui components
   lib/              Shared helpers
+e2e/                Playwright end-to-end tests
 docs/issues/        One Markdown file per issue
 .claude/            Shared Claude Code settings, hooks, skills and agents
 ```

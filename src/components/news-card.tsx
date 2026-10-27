@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BookmarkButton } from "@/components/bookmark-button";
 import { TldrButton } from "@/components/tldr-button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -74,6 +75,7 @@ export function NewsCard({ story, now, tldr = true }: NewsCardProps) {
         {tldr && (
           <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
         )}
+        <BookmarkButton story={story} />
       </CardContent>
     </Card>
   );
