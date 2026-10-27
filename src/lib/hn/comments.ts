@@ -98,3 +98,64 @@ export async function getThreadSample(
 
   return { story, comments, failed };
 }
+
+export type CommentNode = {
+  id: number;
+  author: string;
+  publishedAt: Date;
+  /** Plain text, HTML stripped. */
+  text: string;
+  replies: CommentNode[];
+};
+
+export type CommentTree = {
+  story: HNItem;
+  comments: CommentNode[];
+};
+
+/** A story's discussion as a nested tree, in HN's ranked order. */
+export async function getCommentTree(
+  storyId: number,
+  {
+    maxDepth = 3,
+    maxComments = 100,
+  }: { maxDepth?: number; maxComments?: number } = {},
+): Promise<CommentTree | null> {
+  const story = await getItem(storyId);
+  if (!isLiveStory(story)) return null;
+
+  const comments: CommentNode[] = [];
+  let level = (story.kids ?? []).map((id) => ({ id, into: comments }));
+  let count = 0;
+
+  // Level by level, so the top of each thread wins over deep sub-threads.
+  for (let depth = 1; depth <= maxDepth && level.length > 0; depth++) {
+    level = level.slice(0, maxComments - count);
+    // One failed comment fetch shouldn't sink the page; skip it.
+    const results = await Promise.allSettled(
+      level.map(({ id }) => getItem(id)),
+    );
+    const next: typeof level = [];
+
+    results.forEach((result, index) => {
+      const item = result.status === "fulfilled" ? result.value : null;
+      if (!isLiveComment(item)) return;
+      const text = htmlToText(item.text);
+      if (!text) return;
+
+      const node: CommentNode = {
+        id: item.id,
+        author: item.by ?? "",
+        publishedAt: new Date(item.time * 1000),
+        text,
+        replies: [],
+      };
+      level[index].into.push(node);
+      count++;
+      next.push(...(item.kids ?? []).map((id) => ({ id, into: node.replies })));
+    });
+    level = next;
+  }
+
+  return { story, comments };
+}

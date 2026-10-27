@@ -31,6 +31,10 @@ Then open http://localhost:3000.
 
 The **Save** button on a story card keeps it on the **Saved** page. Saved stories live in your browser's `localStorage`, so they stay on this device and browser, need no account, and show the score and comment count from when you saved them.
 
+### Story page
+
+The comment count on a story card opens `/story/<id>`: the story and its Hacker News comments as a tree, three levels deep and up to 100 comments, shown as plain text. Each thread collapses with a click and works without JavaScript; a link to Hacker News covers the rest of the discussion.
+
 ### AI summaries (optional)
 
 Stories on the feeds with 5 or more comments get a **TL;DR** button (search results don't). It shows a three-bullet summary of the discussion, written by Claude Haiku (`claude-haiku-5-5`). To turn it on, copy `.env.example` to `.env.local` (gitignored) and set your [Claude API key](https://platform.claude.com):

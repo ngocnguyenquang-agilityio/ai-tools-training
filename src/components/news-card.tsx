@@ -69,9 +69,9 @@ export function NewsCard({ story, now, tldr = true }: NewsCardProps) {
           {formatRelativeTime(story.publishedAt, now)}
         </time>
         <span aria-hidden="true">·</span>
-        <a href={story.commentsUrl} {...external} className="hover:underline">
+        <Link href={`/story/${story.id}`} className="hover:underline">
           {plural(story.commentsCount, "comment")}
-        </a>
+        </Link>
         {tldr && (
           <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
         )}
