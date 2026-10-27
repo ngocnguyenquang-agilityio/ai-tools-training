@@ -180,7 +180,6 @@ describe("StoryPage", () => {
 
     expect(mockCacheLife.mock.calls.map(([profile]) => profile)).toEqual([
       { stale: 300, revalidate: 300, expire: 3600 },
-      { stale: 300, revalidate: 300, expire: 3600 },
       { stale: 30, revalidate: 30, expire: 60 },
     ]);
   });

@@ -12,12 +12,18 @@ const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 /** `params` can't be read inside `"use cache"`, so the page passes the ID in. */
 async function getThread(storyId: number) {
   "use cache";
-  // Regenerated in the background every 5 minutes, like the feeds.
-  cacheLife({ stale: 300, revalidate: 300, expire: 3600 });
 
   const tree = await getCommentTree(storyId);
-  // A story HN reports as missing may be a blip; don't pin the 404 for minutes.
-  if (!tree) cacheLife({ stale: 30, revalidate: 30, expire: 60 });
+  // Only one `cacheLife` call may run per invocation
+  // (node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cacheLife.md).
+  // A live story is regenerated every 5 minutes, like the feeds; a story HN
+  // reports as missing may be a blip, so don't pin the 404 for minutes.
+  cacheLife(
+    tree
+      ? { stale: 300, revalidate: 300, expire: 3600 }
+      : { stale: 30, revalidate: 30, expire: 60 },
+  );
+
   // Captured inside the cache scope so relative times match the cached render.
   return tree && { ...tree, now: new Date() };
 }
