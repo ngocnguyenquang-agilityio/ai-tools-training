@@ -56,6 +56,20 @@ describe("StoryPage", () => {
     expect(within(thread!).getByText("Comment 2")).toBeInTheDocument();
   });
 
+  it.each([
+    ["with the author", "pg", /12 points by pg ·/],
+    ["without an author, when HN omits it", undefined, /12 points ·/],
+  ])("shows the points line %s", async (_label, by, expected) => {
+    mockGetCommentTree.mockResolvedValue({
+      story: { ...story, by },
+      comments: [],
+    });
+
+    render(await StoryPage(props("7")));
+
+    expect(screen.getByText(expected)).toBeInTheDocument();
+  });
+
   it("falls back to a generic heading when HN omits the title", async () => {
     mockGetCommentTree.mockResolvedValue({
       story: { ...story, title: undefined },

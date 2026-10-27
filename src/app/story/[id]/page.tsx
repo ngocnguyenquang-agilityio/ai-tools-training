@@ -84,7 +84,7 @@ export default async function StoryPage({ params }: PageProps<"/story/[id]">) {
         </h1>
         <p className="text-muted-foreground">
           {domain && <>{domain} · </>}
-          {story.score ?? 0} points by {story.by ?? ""} ·{" "}
+          {story.score ?? 0} points{story.by && ` by ${story.by}`} ·{" "}
           <time dateTime={new Date(story.time * 1000).toISOString()}>
             {formatRelativeTime(new Date(story.time * 1000), now)}
           </time>
