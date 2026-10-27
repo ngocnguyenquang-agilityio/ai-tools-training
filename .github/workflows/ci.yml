@@ -1,5 +1,5 @@
-# The same five checks as CLAUDE.md > Checks, on every PR and on the
-# integration branch.
+# The same five checks as CLAUDE.md > Checks, plus the Playwright end-to-end
+# tests, on every PR and on the integration branch.
 
 name: CI
 
@@ -36,3 +36,19 @@ jobs:
       - run: pnpm format:check
       - run: pnpm build
       - run: pnpm test
+
+  # A separate job, so a slow or flaky Hacker News response doesn't hide the
+  # five checks above. The specs read the live API and build the app themselves.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
