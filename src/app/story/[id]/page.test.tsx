@@ -56,6 +56,19 @@ describe("StoryPage", () => {
     expect(within(thread!).getByText("Comment 2")).toBeInTheDocument();
   });
 
+  it("falls back to a generic heading when HN omits the title", async () => {
+    mockGetCommentTree.mockResolvedValue({
+      story: { ...story, title: undefined },
+      comments: [],
+    });
+
+    render(await StoryPage(props("7")));
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Story" }),
+    ).toBeInTheDocument();
+  });
+
   it("renders comment text as plain text, never as HTML", async () => {
     mockGetCommentTree.mockResolvedValue({
       story,

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { formatRelativeTime } from "@/lib/format";
 import { storyLinks } from "@/lib/hn/client";
 import { type CommentNode, getCommentTree } from "@/lib/hn/comments";
+import type { HNItem } from "@/lib/hn/types";
 
 const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -18,6 +19,9 @@ async function getThread(storyId: number) {
   // Captured inside the cache scope so relative times match the cached render.
   return tree && { ...tree, now: new Date() };
 }
+
+/** HN can omit a title; the heading and the tab title fall back together. */
+const storyTitle = (story: HNItem) => story.title ?? "Story";
 
 async function getThreadOrNotFound(params: PageProps<"/story/[id]">["params"]) {
   const { id } = await params;
@@ -75,7 +79,7 @@ export default async function StoryPage({ params }: PageProps<"/story/[id]">) {
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">
           <a href={url} {...external} className="hover:underline">
-            {story.title}
+            {storyTitle(story)}
           </a>
         </h1>
         <p className="text-muted-foreground">
