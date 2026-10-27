@@ -24,7 +24,7 @@ The project started on GitHub, moved to GitLab, and moved back to GitHub in #28.
 | 6   | Home page: list top tech stories                                          | [06-home-page.md](06-home-page.md)                           | #5         | GitLab (closed) |
 | 7   | Loading, error and empty states                                           | [07-states.md](07-states.md)                                 | #6         | GitLab (closed) |
 | 8   | Feed tabs (Top/New/Best) and pagination                                   | [08-feeds-pagination.md](08-feeds-pagination.md)             | #6         | GitLab (closed) |
-| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                       | #7, #8     | GitHub          |
+| 9   | Playwright E2E tests                                                      | [09-e2e.md](09-e2e.md)                                       | #7, #8     | GitHub (closed) |
 | 10  | Responsive polish, dark mode, README and deploy                           | [10-polish-docs.md](10-polish-docs.md)                       | #9         | GitHub          |
 | 11  | Document per-issue branch/PR workflow and enforce LF line endings         | [11-workflow-line-endings.md](11-workflow-line-endings.md)   | #1         | GitHub (closed) |
 | 15  | Add Claude Code hooks and interim README                                  | [15-claude-hooks.md](15-claude-hooks.md)                     | #1         | GitHub (closed) |
@@ -43,8 +43,10 @@ The project started on GitHub, moved to GitLab, and moved back to GitHub in #28.
 | 31  | AI TL;DR of a story's comment thread                                      | [31-ai-tldr.md](31-ai-tldr.md)                               | #30        | GitHub (closed) |
 | 33  | Fix /search metadata prefetch warning                                     | [33-search-metadata.md](33-search-metadata.md)               | #30        | GitHub (closed) |
 | 36  | Personal Claude toolkit: rules, skills and commands in the repo           | [36-personal-toolkit.md](36-personal-toolkit.md)             | none       | GitHub (closed) |
+| 38  | Bookmarks: save stories to read later                                     | [38-bookmarks.md](38-bookmarks.md)                           | none       | GitHub (closed) |
+| 39  | Story page with a collapsible comment tree                                | [39-story-page.md](39-story-page.md)                         | none       | GitHub          |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28 and #36 have no dependencies. 8 → 30 → {31, 33}. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28, #36, #38 and #39 have no dependencies. 8 → 30 → {31, 33}. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
