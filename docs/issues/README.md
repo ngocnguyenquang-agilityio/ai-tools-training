@@ -45,8 +45,9 @@ The project started on GitHub, moved to GitLab, and moved back to GitHub in #28.
 | 36  | Personal Claude toolkit: rules, skills and commands in the repo           | [36-personal-toolkit.md](36-personal-toolkit.md)             | none       | GitHub (closed) |
 | 38  | Bookmarks: save stories to read later                                     | [38-bookmarks.md](38-bookmarks.md)                           | none       | GitHub (closed) |
 | 39  | Story page with a collapsible comment tree                                | [39-story-page.md](39-story-page.md)                         | none       | GitHub (closed) |
+| 42  | Add developer playbook to docs/playbooks                                  | [42-developer-playbook.md](42-developer-playbook.md)         | none       | GitHub (closed) |
 
-Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28, #36, #38 and #39 have no dependencies. 8 → 30 → {31, 33}. #10 rechecks #20's dark mode after the polish.
+Order: 1 → {2, 3, 11, 15} → 4 → 5 → 6 → {7, 8} → 9 → 10. #18 to #28, #36, #38, #39 and #42 have no dependencies. 8 → 30 → {31, 33}. #10 rechecks #20's dark mode after the polish.
 
 ## History
 
