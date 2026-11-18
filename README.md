@@ -47,6 +47,10 @@ Restart `pnpm dev` after you change it. Without a key, the rest of the app works
 
 Each story is summarized at most once an hour per server process, because the result is cached in memory, and stories under 5 comments are never sent to Claude. The `/api/tldr/<id>` route only summarizes stories currently on the Top, New or Best feeds, but it has no auth or rate limit, so still set a monthly spend limit on the Claude Console before you deploy with a key.
 
+Stories on the feeds that link to an article also get a **Summarize article** button (text posts like Ask HN don't). Its `/api/article-summary/<id>` route reads the story's link from Hacker News, downloads the page on the server and has Claude Haiku summarize it in 2 to 3 sentences. The same key powers it, and a summary is cached in memory for a day per story.
+
+The server only fetches `http` and `https` pages that resolve to public addresses, and it checks again at each of up to 3 redirects. A page must answer within 8 seconds, be HTML, stay under 1 MiB and not be compressed. PDFs, pages that need JavaScript to render, and paywalled pages show "Couldn't read this article". Like the TL;DR route it has no auth or rate limit, so the spend limit above applies to it too.
+
 ## Scripts
 
 | Script              | What it does                                  |
