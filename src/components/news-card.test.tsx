@@ -90,6 +90,35 @@ describe("NewsCard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("offers an article summary on a story that links to an article", () => {
+    render(<NewsCard story={story} now={now} />);
+
+    expect(
+      screen.getByRole("button", { name: "Summarize article" }),
+    ).toBeInTheDocument();
+  });
+
+  it("offers no article summary on a text post like Ask HN", () => {
+    const askHn: Story = {
+      ...story,
+      url: story.commentsUrl,
+      domain: null,
+    };
+    render(<NewsCard story={askHn} now={now} />);
+
+    expect(
+      screen.queryByRole("button", { name: "Summarize article" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("leaves out the article summary when tldr is false", () => {
+    render(<NewsCard story={story} now={now} tldr={false} />);
+
+    expect(
+      screen.queryByRole("button", { name: "Summarize article" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("offers a save button for the story, even without a TL;DR", () => {
     render(<NewsCard story={story} now={now} tldr={false} />);
 

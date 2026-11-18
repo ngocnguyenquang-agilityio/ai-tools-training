@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "node \"$CLAUDE_PROJECT_DIR/.claude/statusline.mjs\""
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -51,5 +47,12 @@
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"$CLAUDE_PROJECT_DIR/.claude/statusline.mjs\""
+  },
+  "enabledPlugins": {
+    "dev-kit@claude-dev-kit": true
   }
 }

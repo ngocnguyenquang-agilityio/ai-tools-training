@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ArticleSummaryButton } from "@/components/article-summary-button";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { TldrButton } from "@/components/tldr-button";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +24,10 @@ type NewsCardProps = {
   story: Story;
   /** Reference time for the relative timestamp; pass one value for a whole list. */
   now?: Date;
-  /** Show the TL;DR button; the route only summarizes stories on the feeds. */
+  /**
+   * Show the AI buttons (TL;DR and article summary); their routes only
+   * summarize stories on the feeds.
+   */
   tldr?: boolean;
 };
 
@@ -75,6 +79,8 @@ export function NewsCard({ story, now, tldr = true }: NewsCardProps) {
         {tldr && (
           <TldrButton storyId={story.id} commentsCount={story.commentsCount} />
         )}
+        {/* A null domain means a text post with no article behind it. */}
+        {tldr && story.domain && <ArticleSummaryButton storyId={story.id} />}
         <BookmarkButton story={story} />
       </CardContent>
     </Card>
