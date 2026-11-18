@@ -121,10 +121,11 @@ async function resolveHost(hostname: string): Promise<ResolvedAddress[]> {
 function untilAborted<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
   return new Promise((resolve, reject) => {
     if (signal.aborted) return reject(signal.reason);
-    signal.addEventListener("abort", () => reject(signal.reason), {
-      once: true,
-    });
-    promise.then(resolve, reject);
+    const onAbort = () => reject(signal.reason);
+    signal.addEventListener("abort", onAbort, { once: true });
+    promise
+      .finally(() => signal.removeEventListener("abort", onAbort))
+      .then(resolve, reject);
   });
 }
 

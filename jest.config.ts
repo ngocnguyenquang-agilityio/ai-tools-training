@@ -44,12 +44,22 @@ const loadNextJestConfig = createJestConfig(config);
 // its allow-list, which starts with "geist".
 const jestConfig = async () => {
   const resolved = await loadNextJestConfig();
-  return {
-    ...resolved,
-    transformIgnorePatterns: resolved.transformIgnorePatterns?.map((pattern) =>
+  const transformIgnorePatterns = (resolved.transformIgnorePatterns ?? []).map(
+    (pattern) =>
       pattern.replaceAll("(geist|", `(geist|${ESM_ONLY_PACKAGES.join("|")}|`),
-    ),
-  };
+  );
+  // Fail here, in plain words, if a next/jest upgrade changes its allow-list;
+  // otherwise the first sign is an ESM parse error from linkedom's dependencies.
+  if (
+    transformIgnorePatterns.every(
+      (pattern) => !pattern.includes(ESM_ONLY_PACKAGES[0]),
+    )
+  ) {
+    throw new Error(
+      'jest.config.ts: next/jest no longer has a "(geist|" allow-list in transformIgnorePatterns, so linkedom\'s ESM-only dependencies would not be transformed.',
+    );
+  }
+  return { ...resolved, transformIgnorePatterns };
 };
 
 export default jestConfig;
