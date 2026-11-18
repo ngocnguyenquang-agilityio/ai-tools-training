@@ -80,6 +80,11 @@ describe("isPublicAddress", () => {
     ["a Teredo address", "2001:0:4136:e378:8000:63bf:3fff:fdd2"],
     ["an IPv6 documentation address", "2001:db8::1"],
     ["a deprecated IPv6 site-local address", "fec0::1"],
+    ["a documentation address (TEST-NET-1)", "192.0.2.1"],
+    ["a documentation address (TEST-NET-2)", "198.51.100.7"],
+    ["a documentation address (TEST-NET-3)", "203.0.113.9"],
+    ["the 6to4 relay anycast block", "192.88.99.1"],
+    ["a local-use NAT64 address", "64:ff9b:1::1"],
     ["something that is not an IP address", "example.com"],
   ])("rejects %s", (_label, address) => {
     expect(isPublicAddress(address)).toBe(false);

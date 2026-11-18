@@ -73,23 +73,25 @@ export function TldrButton({
 
   return (
     <>
-      <span aria-hidden="true">·</span>
-      <Button
-        variant="ghost"
-        size="xs"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={toggle}
-      >
-        <SparklesIcon aria-hidden="true" />
-        TL;DR
-      </Button>
+      <span className="inline-flex items-center gap-x-1">
+        <span aria-hidden="true">·</span>
+        <Button
+          variant="ghost"
+          size="xs"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={toggle}
+        >
+          <SparklesIcon aria-hidden="true" />
+          TL;DR
+        </Button>
+      </span>
       {/* The live region stays rendered: screen readers may not announce
           content added to a region while it's `display: none`. */}
       <div
         aria-live="polite"
         aria-busy={state.status === "loading"}
-        className="basis-full"
+        className="order-last basis-full"
       >
         <div
           id={panelId}

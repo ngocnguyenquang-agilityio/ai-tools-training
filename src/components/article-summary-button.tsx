@@ -60,23 +60,27 @@ export function ArticleSummaryButton({ storyId }: { storyId: number }) {
 
   return (
     <>
-      <span aria-hidden="true">·</span>
-      <Button
-        variant="ghost"
-        size="xs"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={toggle}
-      >
-        <FileTextIcon aria-hidden="true" />
-        Summarize article
-      </Button>
+      {/* The separator and button wrap as one unit, so a dot never starts or
+          ends a line. */}
+      <span className="inline-flex items-center gap-x-1">
+        <span aria-hidden="true">·</span>
+        <Button
+          variant="ghost"
+          size="xs"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={toggle}
+        >
+          <FileTextIcon aria-hidden="true" />
+          Summarize article
+        </Button>
+      </span>
       {/* The live region stays rendered: screen readers may not announce
           content added to a region while it's `display: none`. */}
       <div
         aria-live="polite"
         aria-busy={state.status === "loading"}
-        className="basis-full"
+        className="order-last basis-full"
       >
         <div
           id={panelId}
